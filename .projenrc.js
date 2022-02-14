@@ -1,8 +1,19 @@
-const { typescript } = require('projen');
+const { typescript, javascript } = require('projen');
 
 const project = new typescript.TypeScriptProject({
   defaultReleaseBranch: 'main',
   name: 'aws-cdk-cloudexec',
+
+  releaseToNpm: true,
+  npmAccess: javascript.NpmAccess.PUBLIC,
+
+  depsUpgradeOptions: {
+    ignoreProjen: false,
+  },
+  autoApproveUpgrades: true,
+  autoApproveOptions: {
+    allowedUsernames: ['misterjoshua'],
+  },
 
   deps: [
     'aws-sdk@^2.0.0',
