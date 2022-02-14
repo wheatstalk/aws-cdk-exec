@@ -24,6 +24,22 @@
         }
       ]
     },
+    "bump": {
+      "name": "bump",
+      "description": "Bumps version based on latest git tag and generates a changelog entry",
+      "env": {
+        "OUTFILE": "package.json",
+        "CHANGELOG": "dist/changelog.md",
+        "BUMPFILE": "dist/version.txt",
+        "RELEASETAG": "dist/releasetag.txt"
+      },
+      "steps": [
+        {
+          "builtin": "release/bump-version"
+        }
+      ],
+      "condition": "! git log --oneline -1 | grep -q \"chore(release):\""
+    },
     "clobber": {
       "name": "clobber",
       "description": "hard resets to HEAD of origin and cleans the local repo",
@@ -95,9 +111,60 @@
         }
       ]
     },
+    "integ:exec:deploy": {
+      "name": "integ:exec:deploy",
+      "steps": [
+        {
+          "exec": "rm -fr test/exec.integ.snapshot"
+        },
+        {
+          "exec": "cdk --app \"ts-node -P tsconfig.dev.json test/exec.integ.ts\" deploy --output test/exec.integ.snapshot"
+        }
+      ]
+    },
+    "integ:exec:lambda:fail": {
+      "name": "integ:exec:lambda:fail",
+      "steps": [
+        {
+          "exec": "ts-node -P tsconfig.dev.json src/cli.ts --app test/exec.integ.snapshot exec integ-cdk-exec/Function"
+        }
+      ]
+    },
+    "integ:exec:lambda:succeed": {
+      "name": "integ:exec:lambda:succeed",
+      "steps": [
+        {
+          "exec": "ts-node -P tsconfig.dev.json src/cli.ts --app test/exec.integ.snapshot exec integ-cdk-exec/Function --input '{\"succeed\":true}'"
+        }
+      ]
+    },
+    "integ:exec:sfn:fail": {
+      "name": "integ:exec:sfn:fail",
+      "steps": [
+        {
+          "exec": "ts-node -P tsconfig.dev.json src/cli.ts --app test/exec.integ.snapshot exec integ-cdk-exec/StateMachine"
+        }
+      ]
+    },
+    "integ:exec:sfn:succeed": {
+      "name": "integ:exec:sfn:succeed",
+      "steps": [
+        {
+          "exec": "ts-node -P tsconfig.dev.json src/cli.ts --app test/exec.integ.snapshot exec integ-cdk-exec/StateMachine --input '{\"succeed\":true}'"
+        }
+      ]
+    },
     "package": {
       "name": "package",
-      "description": "Creates the distribution package"
+      "description": "Creates the distribution package",
+      "steps": [
+        {
+          "exec": "mkdir -p dist/js"
+        },
+        {
+          "exec": "mv $(npm pack) dist/js/"
+        }
+      ]
     },
     "post-compile": {
       "name": "post-compile",
@@ -110,6 +177,30 @@
     "pre-compile": {
       "name": "pre-compile",
       "description": "Prepare the project for compilation"
+    },
+    "release": {
+      "name": "release",
+      "description": "Prepare a release from \"main\" branch",
+      "env": {
+        "RELEASE": "true"
+      },
+      "steps": [
+        {
+          "exec": "rm -fr dist"
+        },
+        {
+          "spawn": "bump"
+        },
+        {
+          "spawn": "build"
+        },
+        {
+          "spawn": "unbump"
+        },
+        {
+          "exec": "git diff --ignore-space-at-eol --exit-code"
+        }
+      ]
     },
     "test": {
       "name": "test",
@@ -141,6 +232,21 @@
         }
       ]
     },
+    "unbump": {
+      "name": "unbump",
+      "description": "Restores version to 0.0.0",
+      "env": {
+        "OUTFILE": "package.json",
+        "CHANGELOG": "dist/changelog.md",
+        "BUMPFILE": "dist/version.txt",
+        "RELEASETAG": "dist/releasetag.txt"
+      },
+      "steps": [
+        {
+          "builtin": "release/reset-version"
+        }
+      ]
+    },
     "upgrade": {
       "name": "upgrade",
       "description": "upgrade dependencies",
@@ -167,7 +273,7 @@
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit json-schema npm-check-updates ts-jest typescript"
+          "exec": "yarn upgrade @types/jest @types/node @types/yargs @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk-lib aws-cdk aws-sdk-mock constructs eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit json-schema npm-check-updates standard-version ts-jest ts-node typescript aws-cdk-lib aws-sdk chalk yargs"
         },
         {
           "exec": "npx projen"
