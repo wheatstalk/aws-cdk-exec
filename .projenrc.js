@@ -2,7 +2,7 @@ const { typescript, javascript } = require('projen');
 
 const project = new typescript.TypeScriptProject({
   defaultReleaseBranch: 'main',
-  name: 'aws-cdk-cloudexec',
+  name: '@wheatstalk/aws-cdk-cloudexec',
 
   releaseToNpm: true,
   npmAccess: javascript.NpmAccess.PUBLIC,
