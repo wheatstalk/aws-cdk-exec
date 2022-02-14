@@ -5,10 +5,10 @@ state machines when given a path to the construct in the user's app.
 
 ## Usage
 
-First, add `@wheatstalk/aws-cdk-exec` to your project's dev dependencies. Then
-synthesize your app to a `cdk.out` directory. Once synthesized there, you can
+First, add `@wheatstalk/aws-cdk-cloudexec` to your project's dev dependencies.
+Then synthesize your app to a `cdk.out` directory. Once synthesized there, you can
 then execute one of your resources with a command like
-`cdk-exec --app cdk.out exec path/to/resource`.
+`cdk-cloudexec --app cdk.out exec path/to/resource`.
 
 ## Example
 
@@ -50,7 +50,7 @@ $ cdk synth --output cdk.out
 
 **Execute a state machine with input**
 ```
-$ cdk-exec --app cdk.out exec integ-cdk-exec/StateMachine --input '{"json":"here"}'
+$ cdk-cloudexec --app cdk.out exec integ-cdk-exec/StateMachine --input '{"json":"here"}'
 ✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
 
 Output:
@@ -64,7 +64,7 @@ Output:
 
 **Execute a function with input**
 ```
-$ cdk-exec --app cdk.out exec integ-cdk-exec/Function --input '{"json":"here"}'
+$ cdk-cloudexec --app cdk.out exec integ-cdk-exec/Function --input '{"json":"here"}'
 ✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
 
 Output:
