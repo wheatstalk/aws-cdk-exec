@@ -1,9 +1,10 @@
+#!/usr/bin/env node
 import * as yargs from 'yargs';
 import { cliExec } from './cli-exec';
 
 function parseCommandLineArguments() {
   return yargs
-    .usage('Usage: cdk-exec -a <cdk-app> COMMAND')
+    .usage('Usage: cdk-cloudexec -a <cdk-app> COMMAND')
     .option('app', { type: 'string', alias: 'a', default: 'cdk.out' })
     .command('exec <PATH>', 'Executes a supported resource at the given construct path', optYargs => optYargs
       .options('input', {
