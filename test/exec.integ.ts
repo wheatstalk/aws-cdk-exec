@@ -7,8 +7,10 @@ const stack = new Stack(app, 'integ-cdk-exec');
 
 new StateMachine(stack, 'StateMachine', {
   definition: new Choice(stack, 'Choice')
-    .when(Condition.isPresent('$.succeed'), new Succeed(stack, 'ChoiceSucceed'))
-    .otherwise(new Fail(stack, 'ChoiceFail')),
+    .when(Condition.isPresent('$.succeed'),
+      new Succeed(stack, 'ChoiceSucceed'))
+    .otherwise(
+      new Fail(stack, 'ChoiceFail')),
 });
 
 new Function(stack, 'Function', {
