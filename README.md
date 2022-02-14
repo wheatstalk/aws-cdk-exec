@@ -1,7 +1,7 @@
 # AWS CDK Exec
 
-Provides `cdk-exec` command that can execute lambda functions or step function
-state machines when given a path to the construct in the user's app.
+Provides the `cdk-cloudexec` command that executes lambda functions or step
+function state machines when given a path to the construct in the user's app.
 
 ## Usage
 
