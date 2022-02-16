@@ -63,13 +63,12 @@ $ cdk synth --output cdk.out
 **Execute a state machine with input**
 
 ```
-$ cdk-exec integ-cdk-exec/StateMachine --input '{"json":"here"}'
+$ cdk-exec integ-cdk-exec/StateMachine --input '{"succeed":true}'
 ✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
 
 Output:
 {
-  "succeed": true,
-  "foo": "bar"
+  "succeed": true
 }
 
 ✅  Execution succeeded
@@ -78,13 +77,13 @@ Output:
 **Execute a lambda with input**
 
 ```
-$ cdk-exec integ-cdk-exec/Function --input '{"json":"here"}'
+$ cdk-exec integ-cdk-exec/Function --input '{"succeed":true}'
 ✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
 
 Output:
 {
   "succeed": true,
-  "foo": "bar"
+  "message": "Hello from Lambda"
 }
 
 ✅  Execution succeeded
@@ -99,7 +98,7 @@ $ cdk-exec --app path/to/cdkout integ-cdk-exec/Function --input '{"json":"here"}
 Output:
 {
   "succeed": true,
-  "foo": "bar"
+  "message": "Hello from Lambda"
 }
 
 ✅  Execution succeeded
