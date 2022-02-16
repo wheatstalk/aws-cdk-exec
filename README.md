@@ -110,10 +110,11 @@ Output:
 deeper nested resources. This is how we support both L1 & L2 constructs, but
 is also a convenient shortcut when your app has only one executable resource.
 
-For example, if you have only one function or state machine in your app, you
-can type `cdk-exec my-stack` and your resource will be found. However, if you
-provide an ambiguous path, matching more than one supported resource, you will
-receive an error message.
+For example, if you have only one function or state machine in a stack, you
+can type `cdk-exec my-stack` and your resource will be found. If your entire
+app has only one executable resource, you can run `cdk-exec` without arguments
+to run it. However, if you provide an ambiguous path, matching more than one
+supported resource, you will receive an error message.
 
 **Path metadata**
 

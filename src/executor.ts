@@ -14,7 +14,7 @@ export interface GetExecutorOptions {
   /**
    * Path to the resource containing the state machine to execute.
    */
-  readonly constructPath: string;
+  readonly constructPath?: string;
 
   /**
    * SDK access
@@ -40,8 +40,9 @@ export async function getExecutor(options: GetExecutorOptions): Promise<Executor
   if (matchingResources.length === 0) {
     return;
   }
+
   if (matchingResources.length > 1) {
-    throw new Error(`The provided path is ambiguous and multiple resources: ${matchingResources.map(r => r.constructPath).join(', ')}`);
+    throw new AmbiguousPathError(matchingResources);
   }
 
   const [matchingResource] = matchingResources;
@@ -71,9 +72,20 @@ export async function getExecutor(options: GetExecutorOptions): Promise<Executor
   }
 }
 
+export class AmbiguousPathError extends Error {
+  public readonly matchingPaths: string[];
+
+  constructor(matchingResources: MatchingResource[]) {
+    const matchingPaths = matchingResources.map(r => r.constructPath);
+    super(`The provided path matches multiple resources: ${matchingPaths.join(', ')}`);
+
+    this.matchingPaths = matchingPaths;
+  }
+}
+
 interface FindMatchingResourceOptions {
   readonly assembly: cxapi.CloudAssembly;
-  readonly constructPath: string;
+  readonly constructPath?: string;
   readonly types: string[];
 }
 
@@ -111,7 +123,7 @@ export function findMatchingResources(options: FindMatchingResourceOptions): Mat
       }
 
       const resourceConstructPath = resourceRecord.Metadata[cxapi.PATH_METADATA_KEY] as string;
-      if (resourceConstructPath === constructPath || resourceConstructPath.startsWith(`${constructPath}/`)) {
+      if (!constructPath || resourceConstructPath === constructPath || resourceConstructPath.startsWith(`${constructPath}/`)) {
         matches.push({
           logicalId,
           type,
