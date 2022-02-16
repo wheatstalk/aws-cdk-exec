@@ -3,11 +3,11 @@ import * as cxapi from 'aws-cdk-lib/cx-api';
 import chalk from 'chalk';
 import * as yargs from 'yargs';
 import { AwsSdk } from '../aws-sdk';
-import { getExecutor } from '../executor';
+import { AmbiguousPathError, getExecutor } from '../executor';
 
 async function main(): Promise<number> {
   const args: any = yargs
-    .usage('$0 <path>', 'Execute the resource for a construct at a given path', builder => builder
+    .usage('$0 [path]', 'Execute the resource for a construct at a given path', builder => builder
       .positional('path', {
         type: 'string',
         description: 'Path to executable construct resource',
@@ -38,31 +38,40 @@ export interface ExecCmdOptions {
 export async function cdkExec(options: ExecCmdOptions): Promise<number> {
   const assembly = new cxapi.CloudAssembly(options.app);
 
-  const executor = await getExecutor({
-    sdk: new AwsSdk(),
-    constructPath: options.constructPath,
-    assembly,
-  });
+  try {
+    const executor = await getExecutor({
+      sdk: new AwsSdk(),
+      constructPath: options.constructPath,
+      assembly,
+    });
 
-  if (!executor) {
-    console.log('❌  Could not find a construct at the provided path');
-    return 1;
+    if (!executor) {
+      console.log('❌  Could not find a construct at the provided path');
+      return 1;
+    }
+
+    console.log('✨  Executing %s', executor.physicalResourceId);
+    const result = await executor.execute(options.input);
+
+    if (result.output) {
+      console.log('\nOutput:\n%s', chalk.cyan(JSON.stringify(result.output, null, 2)));
+    }
+
+    if (result.error) {
+      console.log('\n❌  Execution failed: %s', result.error);
+      return 1;
+    }
+
+    console.log('\n✅  Execution succeeded');
+    return 0;
+  } catch (e) {
+    if (e instanceof AmbiguousPathError) {
+      console.log('\n❌  Matched multiple resources - please be more specific: %s', e.matchingPaths.join(', '));
+      return 1;
+    }
+
+    throw e;
   }
-
-  console.log('✨  Executing %s', executor.physicalResourceId);
-  const result = await executor.execute(options.input);
-
-  if (result.output) {
-    console.log('\nOutput:\n%s', chalk.cyan(JSON.stringify(result.output, null, 2)));
-  }
-
-  if (result.error) {
-    console.log('\n❌  Execution failed: %s', result.error);
-    return 1;
-  }
-
-  console.log('\n✅  Execution succeeded');
-  return 0;
 }
 
 main()

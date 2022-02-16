@@ -76,40 +76,42 @@ class MockAwsSdk implements IAwsSdk {
   }
 }
 
-test('findMatchingResources', () => {
-  const assembly = testAssembly(app => {
-    const stack = new TestStack(app, 'Stack');
-    new aws_stepfunctions.StateMachine(stack, 'Boom1', {
-      definition: new aws_stepfunctions.Succeed(stack, 'Succeed1'),
+describe('findMatchingResources', () => {
+  test.each([undefined, 'Stack'])('constructPath = %s', (constructPath) => {
+    const assembly = testAssembly(app => {
+      const stack = new TestStack(app, 'Stack');
+      new aws_stepfunctions.StateMachine(stack, 'Boom1', {
+        definition: new aws_stepfunctions.Succeed(stack, 'Succeed1'),
+      });
+      new aws_stepfunctions.StateMachine(stack, 'Boom2', {
+        definition: new aws_stepfunctions.Succeed(stack, 'Succeed2'),
+      });
     });
-    new aws_stepfunctions.StateMachine(stack, 'Boom2', {
-      definition: new aws_stepfunctions.Succeed(stack, 'Succeed2'),
+
+    // WHEN
+    const results = findMatchingResources({
+      constructPath: constructPath,
+      types: ['AWS::StepFunctions::StateMachine'],
+      assembly,
     });
-  });
 
-  // WHEN
-  const results = findMatchingResources({
-    constructPath: 'Stack',
-    types: ['AWS::StepFunctions::StateMachine'],
-    assembly,
+    // THEN
+    expect(results.length).toEqual(2);
+    expect(results).toEqual([
+      {
+        constructPath: 'Stack/Boom1/Resource',
+        logicalId: 'STACKXBOOM1XRESOURCE',
+        stackName: 'Stack',
+        type: 'AWS::StepFunctions::StateMachine',
+      },
+      {
+        constructPath: 'Stack/Boom2/Resource',
+        logicalId: 'STACKXBOOM2XRESOURCE',
+        stackName: 'Stack',
+        type: 'AWS::StepFunctions::StateMachine',
+      },
+    ]);
   });
-
-  // THEN
-  expect(results.length).toEqual(2);
-  expect(results).toEqual([
-    {
-      constructPath: 'Stack/Boom1/Resource',
-      logicalId: 'STACKXBOOM1XRESOURCE',
-      stackName: 'Stack',
-      type: 'AWS::StepFunctions::StateMachine',
-    },
-    {
-      constructPath: 'Stack/Boom2/Resource',
-      logicalId: 'STACKXBOOM2XRESOURCE',
-      stackName: 'Stack',
-      type: 'AWS::StepFunctions::StateMachine',
-    },
-  ]);
 });
 
 describe('getExecutor', () => {
@@ -255,7 +257,7 @@ describe('getExecutor', () => {
           assembly,
           constructPath: 'Stack',
         });
-      }).rejects.toThrow(/ambiguous.*multiple/i);
+      }).rejects.toThrow(/multiple/i);
     });
   });
 });
