@@ -1,16 +1,19 @@
-# AWS CDK Exec
+# AWS CDK Cloud Exec
 
-Provides the `cdk-cloudexec` command that executes lambda functions or step
-function state machines when given a path to the construct in the user's app.
+Provides `cdk-exec`, a command to tighten up your AWS CDK development loop by
+helping you find and execute the physical resources for your lambdas and state
+machines, with or without input. Example: `cdk-exec my-stack/MyLambda`
+
+> WARNING: Do not rely on this tool to execute your functions in a production
+> environment. Now that you have been warned, please read on.
 
 ## Usage
 
-First, add `@wheatstalk/aws-cdk-cloudexec` to your project's dev dependencies.
-Then synthesize your app to a `cdk.out` directory. Once synthesized there, you can
-then execute one of your resources with a command like
-`cdk-cloudexec --app cdk.out exec path/to/resource`.
+First, add `@wheatstalk/aws-cdk-exec` to your project's dev dependencies.
+Then synthesize your app to a `cdk.out` directory. Once synthesized there, you
+can execute one of your resources with `cdk-exec`.
 
-## Example
+## Full Example
 
 **app.ts**
 
@@ -46,13 +49,21 @@ app.synth();
 ```
 
 **Synthesize your app**
+
+The `cdk-exec` tool operates on a synthesized cloud assembly (your `cdk.out`
+directory), so the first step is to synthesize your app:
+
 ```console
 $ cdk synth --output cdk.out
 ```
 
+> If you're using `cdk watch`, the CDK will keep your `cdk.out` up to date so
+> that you can start watch mode and use `cdk-exec` (roughly) at will.
+
 **Execute a state machine with input**
+
 ```
-$ cdk-cloudexec --app cdk.out exec integ-cdk-exec/StateMachine --input '{"json":"here"}'
+$ cdk-exec integ-cdk-exec/StateMachine --input '{"json":"here"}'
 ✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
 
 Output:
@@ -64,9 +75,25 @@ Output:
 ✅  Execution succeeded
 ```
 
-**Execute a function with input**
+**Execute a lambda with input**
+
 ```
-$ cdk-cloudexec --app cdk.out exec integ-cdk-exec/Function --input '{"json":"here"}'
+$ cdk-exec integ-cdk-exec/Function --input '{"json":"here"}'
+✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
+
+Output:
+{
+  "succeed": true,
+  "foo": "bar"
+}
+
+✅  Execution succeeded
+```
+
+**Use a custom cloud assembly directory**
+
+```
+$ cdk-exec --app path/to/cdkout integ-cdk-exec/Function --input '{"json":"here"}'
 ✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
 
 Output:
