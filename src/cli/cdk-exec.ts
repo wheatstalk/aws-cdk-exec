@@ -77,7 +77,7 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
     return 0;
   } catch (e) {
     if (e instanceof AmbiguousPathError) {
-      console.log('\n❌  Matched multiple resources - please be more specific: %s', e.matchingPaths.join(', '));
+      console.log('\n❌  Matched multiple resources: %s', e.matchingPaths.join(', '));
       return 1;
     }
 
