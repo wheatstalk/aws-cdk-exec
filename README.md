@@ -107,9 +107,8 @@ Output:
 **Path matching**
 
 `cdk-exec` searches for resources matching the exact path you provide and any
-deeper nested resources. This is the means by which we support both L1 & L2
-constructs, but is also a convenient shortcut when your app has only one
-executable resource.
+deeper nested resources. This is how we support both L1 & L2 constructs, but
+is also a convenient shortcut when your app has only one executable resource.
 
 For example, if you have only one function or state machine in your app, you
 can type `cdk-exec my-stack` and your resource will be found. However, if you
