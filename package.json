@@ -1,5 +1,5 @@
 {
-  "name": "@wheatstalk/aws-cdk-cloudexec",
+  "name": "@wheatstalk/aws-cdk-exec",
   "bin": {
     "cdk-exec": "lib/cli/cdk-exec.js"
   },

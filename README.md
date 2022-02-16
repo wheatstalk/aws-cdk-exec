@@ -1,4 +1,4 @@
-# AWS CDK Cloud Exec
+# AWS CDK Exec
 
 Provides `cdk-exec`, a command to tighten up your AWS CDK development loop by
 helping you find and execute the physical resources for your lambdas and state
