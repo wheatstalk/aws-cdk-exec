@@ -1,5 +1,9 @@
 {
   "name": "@wheatstalk/aws-cdk-exec",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wheatstalk/aws-cdk-exec"
+  },
   "bin": {
     "cdk-exec": "lib/cli/cdk-exec.js"
   },
@@ -28,6 +32,11 @@
     "upgrade": "npx projen upgrade",
     "watch": "npx projen watch",
     "projen": "npx projen"
+  },
+  "author": {
+    "name": "Josh Kellendonk",
+    "email": "joshkellendonk@gmail.com",
+    "organization": false
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",

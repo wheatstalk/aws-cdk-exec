@@ -3,6 +3,9 @@ const { typescript, javascript } = require('projen');
 const project = new typescript.TypeScriptProject({
   defaultReleaseBranch: 'main',
   name: '@wheatstalk/aws-cdk-exec',
+  authorName: 'Josh Kellendonk',
+  authorEmail: 'joshkellendonk@gmail.com',
+  repository: 'https://github.com/wheatstalk/aws-cdk-exec',
 
   releaseToNpm: true,
   npmAccess: javascript.NpmAccess.PUBLIC,
