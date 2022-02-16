@@ -37,12 +37,11 @@ export interface ExecCmdOptions {
 
 export async function cdkExec(options: ExecCmdOptions): Promise<number> {
   const assembly = new cxapi.CloudAssembly(options.app);
-  const stacks = assembly.stacks;
 
   const executor = await getExecutor({
     sdk: new AwsSdk(),
     constructPath: options.constructPath,
-    stackArtifacts: stacks,
+    assembly,
   });
 
   if (!executor) {
