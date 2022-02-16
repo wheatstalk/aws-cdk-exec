@@ -3,7 +3,7 @@ import * as cxapi from 'aws-cdk-lib/cx-api';
 import chalk from 'chalk';
 import * as yargs from 'yargs';
 import { AwsSdk } from '../aws-sdk';
-import { AmbiguousPathError, getExecutor } from '../executor';
+import { AmbiguousPathError, Executor } from '../executor';
 
 async function main(): Promise<number> {
   const args: any = yargs
@@ -29,20 +29,31 @@ async function main(): Promise<number> {
   });
 }
 
-export interface ExecCmdOptions {
+export interface CdkExecOptions {
+  /**
+   * App directory.
+   */
   readonly app: string;
-  readonly constructPath: string;
+
+  /**
+   * Path of the construct to execute.
+   */
+  readonly constructPath?: string;
+
+  /**
+   * Execution input.
+   */
   readonly input?: string;
 }
 
-export async function cdkExec(options: ExecCmdOptions): Promise<number> {
+export async function cdkExec(options: CdkExecOptions): Promise<number> {
   const assembly = new cxapi.CloudAssembly(options.app);
 
   try {
-    const executor = await getExecutor({
-      sdk: new AwsSdk(),
-      constructPath: options.constructPath,
+    const executor = await Executor.findExecutor({
       assembly,
+      constructPath: options.constructPath,
+      sdk: new AwsSdk(),
     });
 
     if (!executor) {

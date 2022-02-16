@@ -2,7 +2,20 @@
 
 Provides `cdk-exec`, a command to tighten up your AWS CDK development loop by
 helping you find and execute the physical resources for your lambdas and state
-machines, with or without input. Example: `cdk-exec my-stack/MyLambda`
+machines, with or without input.
+
+```
+$ cdk-exec integ-cdk-exec/Function --input '{"succeed":true}'
+✨  Executing integ-cdk-exec-Function76856677-k5ehIzbG2T6S
+
+Output:
+{
+  "succeed": true,
+  "message": "Hello from Lambda"
+}
+
+✅  Execution succeeded
+```
 
 > WARNING: Do not rely on this tool to execute your functions in a production
 > environment. Now that you have been warned, please read on.
@@ -64,7 +77,7 @@ $ cdk synth --output cdk.out
 
 ```
 $ cdk-exec integ-cdk-exec/StateMachine --input '{"succeed":true}'
-✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
+✨  Executing arn:aws:states:REGION:000000000000:stateMachine:StateMachine2E01A3A5-8z4XHXAvT3qq
 
 Output:
 {
@@ -78,7 +91,7 @@ Output:
 
 ```
 $ cdk-exec integ-cdk-exec/Function --input '{"succeed":true}'
-✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
+✨  Executing integ-cdk-exec-Function76856677-k5ehIzbG2T6S
 
 Output:
 {
@@ -93,7 +106,7 @@ Output:
 
 ```
 $ cdk-exec --app path/to/cdkout integ-cdk-exec/Function --input '{"json":"here"}'
-✨  Executing arn:aws:states:REGION:0000000000:stateMachine:StateMachine2E01A3A5-kPnq1OgV5KYX
+✨  Executing integ-cdk-exec-Function76856677-k5ehIzbG2T6S
 
 Output:
 {
