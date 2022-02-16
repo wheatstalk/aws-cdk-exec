@@ -1,5 +1,6 @@
 {
   "name": "@wheatstalk/aws-cdk-exec",
+  "description": "An AWS CDK Cloud Assembly-aware command to help find and execute lambda functions and state machines",
   "repository": {
     "type": "git",
     "url": "https://github.com/wheatstalk/aws-cdk-exec"
@@ -70,6 +71,13 @@
     "chalk": "^4.0.0",
     "yargs": "^17.0.0"
   },
+  "keywords": [
+    "cdk",
+    "cdk-extension",
+    "cli",
+    "lambda",
+    "stepfunctions"
+  ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "publishConfig": {

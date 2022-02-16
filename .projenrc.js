@@ -6,6 +6,8 @@ const project = new typescript.TypeScriptProject({
   authorName: 'Josh Kellendonk',
   authorEmail: 'joshkellendonk@gmail.com',
   repository: 'https://github.com/wheatstalk/aws-cdk-exec',
+  description: 'An AWS CDK Cloud Assembly-aware command to help find and execute lambda functions and state machines',
+  keywords: ['cdk', 'cdk-extension', 'cli', 'lambda', 'stepfunctions'],
 
   releaseToNpm: true,
   npmAccess: javascript.NpmAccess.PUBLIC,
