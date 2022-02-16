@@ -1,11 +1,25 @@
 import AWS from 'aws-sdk';
 
 export interface IAwsSdk {
+  /**
+   * Get the CloudFormation client.
+   */
   cloudFormation(): AWS.CloudFormation;
+
+  /**
+   * Get the StepFunctions SDK client.
+   */
   stepFunctions(): AWS.StepFunctions;
+
+  /**
+   * Get the Lambda SDK client.
+   */
   lambda(): AWS.Lambda;
 }
 
+/**
+ * Creates AWS SDK clients.
+ */
 export class AwsSdk implements IAwsSdk {
   cloudFormation(): AWS.CloudFormation {
     return new AWS.CloudFormation();
@@ -18,6 +32,9 @@ export class AwsSdk implements IAwsSdk {
   }
 }
 
+/**
+ * List stack resources.
+ */
 export class LazyListStackResources {
   private readonly stackName: string;
   private readonly cloudFormation: AWS.CloudFormation;

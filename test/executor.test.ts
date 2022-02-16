@@ -1,120 +1,10 @@
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-import { App, CfnElement, Stack } from 'aws-cdk-lib';
+import { Stack } from 'aws-cdk-lib';
 import * as aws_lambda from 'aws-cdk-lib/aws-lambda';
 import * as aws_stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
-import * as cxapi from 'aws-cdk-lib/cx-api';
-import AWS from 'aws-sdk';
-import { Construct } from 'constructs';
-import { IAwsSdk } from '../src/aws-sdk';
-import { getExecutor, StateMachineExecutor, LambdaFunctionExecutor, findMatchingResources } from '../src/executor';
+import { Executor, LambdaFunctionExecutor, StateMachineExecutor } from '../src/executor';
+import { MockAwsSdk, testAssembly, TestStack } from './util';
 
-function testAssembly(cb: (app: App) => void): cxapi.CloudAssembly {
-  const appDir = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp'));
-
-  const app = new App({
-    outdir: appDir,
-    context: {
-      [cxapi.PATH_METADATA_ENABLE_CONTEXT]: true,
-    },
-  });
-
-  cb(app);
-
-  app.synth();
-
-  return new cxapi.CloudAssembly(appDir);
-}
-
-class TestStack extends Stack {
-  constructor(scope: Construct, id: string) {
-    super(scope, id);
-  }
-
-  protected allocateLogicalId(cfnElement: CfnElement): string {
-    return cfnElement.node.path.split('/').join('X').toUpperCase().replace(/[^A-Z0-9]/, '');
-  }
-}
-
-class MockAwsSdk implements IAwsSdk {
-  static stub(stub: any): any {
-    return new Proxy({}, {
-      get(_target: {}, p: string | symbol, _receiver: any): any {
-        if (!stub[p]) {
-          throw new Error(`${String(p)} is not mocked`);
-        }
-        return () => ({
-          promise: () => stub[p](),
-        });
-      },
-    });
-  }
-
-  cloudFormation(): AWS.CloudFormation {
-    throw new Error('Not stubbed');
-  }
-
-  stubCloudFormation(client: any) {
-    this.cloudFormation = () => MockAwsSdk.stub(client);
-  }
-
-  lambda(): AWS.Lambda {
-    throw new Error('Not stubbed');
-  }
-
-  stubLambda(client: any) {
-    this.lambda = () => MockAwsSdk.stub(client);
-  }
-
-  stepFunctions(): AWS.StepFunctions {
-    throw new Error('Not stubbed');
-  }
-
-  stubStepFunctions(client: any) {
-    this.stepFunctions = () => MockAwsSdk.stub(client);
-  }
-}
-
-describe('findMatchingResources', () => {
-  test.each([undefined, 'Stack'])('constructPath = %s', (constructPath) => {
-    const assembly = testAssembly(app => {
-      const stack = new TestStack(app, 'Stack');
-      new aws_stepfunctions.StateMachine(stack, 'Boom1', {
-        definition: new aws_stepfunctions.Succeed(stack, 'Succeed1'),
-      });
-      new aws_stepfunctions.StateMachine(stack, 'Boom2', {
-        definition: new aws_stepfunctions.Succeed(stack, 'Succeed2'),
-      });
-    });
-
-    // WHEN
-    const results = findMatchingResources({
-      constructPath: constructPath,
-      types: ['AWS::StepFunctions::StateMachine'],
-      assembly,
-    });
-
-    // THEN
-    expect(results.length).toEqual(2);
-    expect(results).toEqual([
-      {
-        constructPath: 'Stack/Boom1/Resource',
-        logicalId: 'STACKXBOOM1XRESOURCE',
-        stackName: 'Stack',
-        type: 'AWS::StepFunctions::StateMachine',
-      },
-      {
-        constructPath: 'Stack/Boom2/Resource',
-        logicalId: 'STACKXBOOM2XRESOURCE',
-        stackName: 'Stack',
-        type: 'AWS::StepFunctions::StateMachine',
-      },
-    ]);
-  });
-});
-
-describe('getExecutor', () => {
+describe('Executor', () => {
   describe('state machine', () => {
     // GIVEN
     const assembly = testAssembly(app => {
@@ -142,7 +32,7 @@ describe('getExecutor', () => {
 
     test('L1 state machine executor', async () => {
       // WHEN
-      const executor = await getExecutor({
+      const executor = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
@@ -155,7 +45,7 @@ describe('getExecutor', () => {
 
     test('L2 state machine executor', async () => {
       // WHEN
-      const executor = await getExecutor({
+      const executor = await Executor.find({
         sdk: sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
@@ -196,7 +86,7 @@ describe('getExecutor', () => {
 
     test('L1 lambda function executor', async () => {
       // WHEN
-      const executor = await getExecutor({
+      const executor = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
@@ -209,7 +99,7 @@ describe('getExecutor', () => {
 
     test('L2 lambda function executor', async () => {
       // WHEN
-      const executor = await getExecutor({
+      const executor = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
@@ -229,7 +119,7 @@ describe('getExecutor', () => {
       const sdk = new MockAwsSdk();
 
       // WHEN
-      const executor = await getExecutor({
+      const executor = await Executor.find({
         sdk,
         constructPath: 'Stack/does-not-exist',
         assembly,
@@ -252,7 +142,7 @@ describe('getExecutor', () => {
 
       // WHEN
       await expect(async () => {
-        await getExecutor({
+        await Executor.find({
           sdk: new MockAwsSdk(),
           assembly,
           constructPath: 'Stack',

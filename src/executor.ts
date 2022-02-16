@@ -1,141 +1,10 @@
 import * as cxapi from 'aws-cdk-lib/cx-api';
 import * as AWS from 'aws-sdk';
 import { IAwsSdk, LazyListStackResources } from './aws-sdk';
+import { findMatchingResources, MatchingResource } from './find-matching-resources';
 
 const STATE_MACHINE_TYPE = 'AWS::StepFunctions::StateMachine';
 const LAMBDA_TYPE = 'AWS::Lambda::Function';
-
-export interface GetExecutorOptions {
-  /**
-   * The Cloud Assembly
-   */
-  readonly assembly: cxapi.CloudAssembly;
-
-  /**
-   * Path to the resource containing the state machine to execute.
-   */
-  readonly constructPath?: string;
-
-  /**
-   * SDK access
-   */
-  readonly sdk: IAwsSdk;
-}
-
-/**
- * Gets an executor.
- */
-export async function getExecutor(options: GetExecutorOptions): Promise<Executor | undefined> {
-  const { assembly, constructPath, sdk } = options;
-
-  const matchingResources = findMatchingResources({
-    assembly,
-    constructPath,
-    types: [
-      STATE_MACHINE_TYPE,
-      LAMBDA_TYPE,
-    ],
-  });
-
-  if (matchingResources.length === 0) {
-    return;
-  }
-
-  if (matchingResources.length > 1) {
-    throw new AmbiguousPathError(matchingResources);
-  }
-
-  const [matchingResource] = matchingResources;
-  const listStackResources = new LazyListStackResources(sdk, matchingResource.stackName);
-  const stackResource = (await listStackResources.listStackResources())
-    .find(sr => sr.LogicalResourceId === matchingResource.logicalId);
-
-  if (!stackResource || !stackResource.PhysicalResourceId) {
-    throw new Error(`Could not find the physical resource id for ${constructPath}`);
-  }
-
-  switch (stackResource.ResourceType) {
-    case STATE_MACHINE_TYPE:
-      return new StateMachineExecutor({
-        physicalResourceId: stackResource.PhysicalResourceId,
-        stepFunctions: sdk.stepFunctions(),
-      });
-
-    case LAMBDA_TYPE:
-      return new LambdaFunctionExecutor({
-        physicalResourceId: stackResource.PhysicalResourceId,
-        lambda: sdk.lambda(),
-      });
-
-    default:
-      throw new Error(`Unsupported resource type ${stackResource.ResourceType}`);
-  }
-}
-
-export class AmbiguousPathError extends Error {
-  public readonly matchingPaths: string[];
-
-  constructor(matchingResources: MatchingResource[]) {
-    const matchingPaths = matchingResources.map(r => r.constructPath);
-    super(`The provided path matches multiple resources: ${matchingPaths.join(', ')}`);
-
-    this.matchingPaths = matchingPaths;
-  }
-}
-
-interface FindMatchingResourceOptions {
-  readonly assembly: cxapi.CloudAssembly;
-  readonly constructPath?: string;
-  readonly types: string[];
-}
-
-export interface MatchingResource {
-  readonly stackName: string;
-  readonly logicalId: string;
-  readonly type: string;
-  readonly constructPath: string;
-}
-
-export function findMatchingResources(options: FindMatchingResourceOptions): MatchingResource[] {
-  const { constructPath, types, assembly } = options;
-
-  const matches = Array<MatchingResource>();
-  for (const stack of assembly.stacks) {
-    const template = stack.template;
-
-    if (typeof template.Resources !== 'object') {
-      continue;
-    }
-
-    for (const [logicalId, resource] of Object.entries(template.Resources)) {
-      if (typeof resource !== 'object' || resource === null) {
-        continue;
-      }
-
-      const resourceRecord = resource as Record<string, any>;
-      if (typeof resourceRecord.Metadata !== 'object') {
-        continue;
-      }
-
-      const type = resourceRecord.Type as string;
-      if (!types.some(t => t === String(type))) {
-        continue;
-      }
-
-      const resourceConstructPath = resourceRecord.Metadata[cxapi.PATH_METADATA_KEY] as string;
-      if (!constructPath || resourceConstructPath === constructPath || resourceConstructPath.startsWith(`${constructPath}/`)) {
-        matches.push({
-          logicalId,
-          type,
-          constructPath: resourceConstructPath,
-          stackName: stack.stackName,
-        });
-      }
-    }
-  }
-
-  return matches;
-}
 
 /**
  * Options for `StateMachineExecutor`
@@ -148,15 +17,27 @@ export interface ExecutorOptions {
 }
 
 /**
- * ABC for executors.
+ * Executor base class.
  */
 export abstract class Executor {
+  /**
+   * Find an executor
+   */
+  static async find(options: FindExecutorOptions): Promise<Executor | undefined> {
+    return findExecutor(options);
+  }
+
   readonly physicalResourceId: string;
 
   protected constructor(options: ExecutorOptions) {
     this.physicalResourceId = options.physicalResourceId;
   }
 
+  /**
+   * Execute the resource
+   *
+   * @param input Input for execution.
+   */
   abstract execute(input?: string): Promise<ExecuteResult>;
 
   protected validateJsonObjectInput(input: string | undefined) {
@@ -167,18 +48,23 @@ export abstract class Executor {
 }
 
 /**
- * The executor's result.
+ * Options for finding executors.
  */
-export interface ExecuteResult {
+export interface FindExecutorOptions {
   /**
-   * The execution's output.
+   * The Cloud Assembly
    */
-  readonly output?: any;
+  readonly assembly: cxapi.CloudAssembly;
 
   /**
-   * Error message
+   * Path to the resource containing the state machine to execute.
    */
-  readonly error?: string;
+  readonly constructPath?: string;
+
+  /**
+   * AWS SDK
+   */
+  readonly sdk: IAwsSdk;
 }
 
 /**
@@ -238,6 +124,21 @@ export class StateMachineExecutor extends Executor {
   }
 }
 
+/**
+ * The executor's result.
+ */
+export interface ExecuteResult {
+  /**
+   * The execution's output.
+   */
+  readonly output?: any;
+
+  /**
+   * Error message
+   */
+  readonly error?: string;
+}
+
 export interface LambdaFunctionExecutorOptions extends ExecutorOptions {
   /**
    * The Lambda SDK
@@ -294,6 +195,70 @@ function getLambdaErrorMessage(output: any) {
   }
 
   return;
+}
+
+/**
+ * Finds an executor.
+ */
+async function findExecutor(options: FindExecutorOptions): Promise<Executor | undefined> {
+  const { assembly, constructPath, sdk } = options;
+
+  const matchingResources = findMatchingResources({
+    assembly,
+    constructPath,
+    types: [
+      STATE_MACHINE_TYPE,
+      LAMBDA_TYPE,
+    ],
+  });
+
+  if (matchingResources.length === 0) {
+    return;
+  }
+
+  if (matchingResources.length > 1) {
+    throw new AmbiguousPathError(matchingResources);
+  }
+
+  const [matchingResource] = matchingResources;
+  const listStackResources = new LazyListStackResources(sdk, matchingResource.stackName);
+  const stackResource = (await listStackResources.listStackResources())
+    .find(sr => sr.LogicalResourceId === matchingResource.logicalId);
+
+  if (!stackResource || !stackResource.PhysicalResourceId) {
+    throw new Error(`Could not find the physical resource id for ${constructPath}`);
+  }
+
+  switch (stackResource.ResourceType) {
+    case STATE_MACHINE_TYPE:
+      return new StateMachineExecutor({
+        physicalResourceId: stackResource.PhysicalResourceId,
+        stepFunctions: sdk.stepFunctions(),
+      });
+
+    case LAMBDA_TYPE:
+      return new LambdaFunctionExecutor({
+        physicalResourceId: stackResource.PhysicalResourceId,
+        lambda: sdk.lambda(),
+      });
+
+    default:
+      throw new Error(`Unsupported resource type ${stackResource.ResourceType}`);
+  }
+}
+
+/**
+ * The given path is ambiguous.
+ */
+export class AmbiguousPathError extends Error {
+  public readonly matchingPaths: string[];
+
+  constructor(matchingResources: MatchingResource[]) {
+    const matchingPaths = matchingResources.map(r => r.constructPath);
+    super(`The provided path matches multiple resources: ${matchingPaths.join(', ')}`);
+
+    this.matchingPaths = matchingPaths;
+  }
 }
 
 function isJsonObject(json: string) {
