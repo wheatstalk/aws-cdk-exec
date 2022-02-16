@@ -22,7 +22,7 @@ export interface GetExecutorOptions {
 /**
  * Gets an executor.
  */
-export async function getExecutor(options: GetExecutorOptions): Promise<Executor> {
+export async function getExecutor(options: GetExecutorOptions): Promise<Executor | undefined> {
   const { sdk, stackArtifacts, constructPath } = options;
 
   for (const stackArtifact of stackArtifacts) {
@@ -58,7 +58,7 @@ export async function getExecutor(options: GetExecutorOptions): Promise<Executor
     }
   }
 
-  throw new Error('Could not find a resource with the given construct path');
+  return undefined;
 }
 
 /**

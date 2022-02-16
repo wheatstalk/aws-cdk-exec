@@ -21,7 +21,7 @@
             "path": "integ-cdk-exec/Choice",
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_stepfunctions.Choice",
-              "version": "2.12.0"
+              "version": "2.0.0"
             }
           },
           "ChoiceSucceed": {
@@ -29,7 +29,7 @@
             "path": "integ-cdk-exec/ChoiceSucceed",
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_stepfunctions.Succeed",
-              "version": "2.12.0"
+              "version": "2.0.0"
             }
           },
           "ChoiceFail": {
@@ -37,7 +37,7 @@
             "path": "integ-cdk-exec/ChoiceFail",
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_stepfunctions.Fail",
-              "version": "2.12.0"
+              "version": "2.0.0"
             }
           },
           "StateMachine": {
@@ -61,12 +61,15 @@
                               "Effect": "Allow",
                               "Principal": {
                                 "Service": {
-                                  "Fn::FindInMap": [
-                                    "ServiceprincipalMap",
-                                    {
-                                      "Ref": "AWS::Region"
-                                    },
-                                    "states"
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "states.",
+                                      {
+                                        "Ref": "AWS::Region"
+                                      },
+                                      ".amazonaws.com"
+                                    ]
                                   ]
                                 }
                               }
@@ -78,13 +81,13 @@
                     },
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                      "version": "2.12.0"
+                      "version": "2.0.0"
                     }
                   }
                 },
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.aws_iam.Role",
-                  "version": "2.12.0"
+                  "version": "2.0.0"
                 }
               },
               "Resource": {
@@ -104,13 +107,13 @@
                 },
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.aws_stepfunctions.CfnStateMachine",
-                  "version": "2.12.0"
+                  "version": "2.0.0"
                 }
               }
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_stepfunctions.StateMachine",
-              "version": "2.12.0"
+              "version": "2.0.0"
             }
           },
           "Function": {
@@ -157,13 +160,13 @@
                     },
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                      "version": "2.12.0"
+                      "version": "2.0.0"
                     }
                   }
                 },
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.aws_iam.Role",
-                  "version": "2.12.0"
+                  "version": "2.0.0"
                 }
               },
               "Resource": {
@@ -187,13 +190,13 @@
                 },
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
-                  "version": "2.12.0"
+                  "version": "2.0.0"
                 }
               }
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_lambda.Function",
-              "version": "2.12.0"
+              "version": "2.0.0"
             }
           },
           "CDKMetadata": {
@@ -205,7 +208,7 @@
                 "path": "integ-cdk-exec/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
-                  "version": "2.12.0"
+                  "version": "2.0.0"
                 }
               },
               "Condition": {
@@ -213,7 +216,7 @@
                 "path": "integ-cdk-exec/CDKMetadata/Condition",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnCondition",
-                  "version": "2.12.0"
+                  "version": "2.0.0"
                 }
               }
             },
@@ -221,25 +224,17 @@
               "fqn": "constructs.Construct",
               "version": "10.0.61"
             }
-          },
-          "Service-principalMap": {
-            "id": "Service-principalMap",
-            "path": "integ-cdk-exec/Service-principalMap",
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.CfnMapping",
-              "version": "2.12.0"
-            }
           }
         },
         "constructInfo": {
           "fqn": "aws-cdk-lib.Stack",
-          "version": "2.12.0"
+          "version": "2.0.0"
         }
       }
     },
     "constructInfo": {
       "fqn": "aws-cdk-lib.App",
-      "version": "2.12.0"
+      "version": "2.0.0"
     }
   }
 }

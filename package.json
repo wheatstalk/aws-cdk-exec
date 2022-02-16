@@ -1,7 +1,7 @@
 {
   "name": "@wheatstalk/aws-cdk-cloudexec",
   "bin": {
-    "cdk-cloudexec": "lib/cli.js"
+    "cdk-exec": "lib/cli/cdk-exec.js"
   },
   "scripts": {
     "build": "npx projen build",

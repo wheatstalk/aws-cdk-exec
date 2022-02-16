@@ -37,7 +37,7 @@ const project = new typescript.TypeScriptProject({
 project.addGitIgnore('/.idea');
 
 project.package.addBin({
-  'cdk-cloudexec': 'lib/cli.js',
+  'cdk-exec': 'lib/cli/cdk-exec.js',
 });
 
 // Integration Test Setup
@@ -48,7 +48,7 @@ const deployTask = project.addTask('integ:exec:deploy');
 deployTask.exec(`rm -fr ${appDir}`);
 deployTask.exec(`cdk --app "${tsNode} test/exec.integ.ts" deploy --output ${appDir}`);
 
-const cliCmd = `${tsNode} src/cli.ts --app ${appDir} exec`;
+const cliCmd = `${tsNode} src/cli/cdk-exec.ts --app ${appDir} exec`;
 project.addTask('integ:exec:sfn:succeed', {
   exec: `${cliCmd} integ-cdk-exec/StateMachine --input '{"succeed":true}'`,
 });

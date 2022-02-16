@@ -113,7 +113,7 @@ describe('getExecutor', () => {
 
       // THEN
       expect(executor).toBeInstanceOf(StateMachineExecutor);
-      expect(executor.physicalResourceId).toEqual('physical-boom');
+      expect(executor!.physicalResourceId).toEqual('physical-boom');
     });
 
     test('L2 state machine executor', async () => {
@@ -126,7 +126,7 @@ describe('getExecutor', () => {
 
       // THEN
       expect(executor).toBeInstanceOf(StateMachineExecutor);
-      expect(executor.physicalResourceId).toEqual('physical-boom');
+      expect(executor!.physicalResourceId).toEqual('physical-boom');
     });
   });
 
@@ -167,7 +167,7 @@ describe('getExecutor', () => {
 
       // THEN
       expect(executor).toBeInstanceOf(LambdaFunctionExecutor);
-      expect(executor.physicalResourceId).toEqual('physical-boom');
+      expect(executor!.physicalResourceId).toEqual('physical-boom');
     });
 
     test('L2 lambda function executor', async () => {
@@ -180,7 +180,7 @@ describe('getExecutor', () => {
 
       // THEN
       expect(executor).toBeInstanceOf(LambdaFunctionExecutor);
-      expect(executor.physicalResourceId).toEqual('physical-boom');
+      expect(executor!.physicalResourceId).toEqual('physical-boom');
     });
   });
 
@@ -215,21 +215,21 @@ describe('getExecutor', () => {
       }).rejects.toThrow(/unsupported resource type/i);
     });
 
-    test('errors when path not found', async () => {
+    test('undefined when path not found', async () => {
       const assembly = testAssembly(app => {
         new Stack(app, 'Stack');
       });
       const sdk = new MockAwsSdk();
 
       // WHEN
-      await expect(async () => {
+      const executor = await getExecutor({
+        sdk,
+        constructPath: 'Stack/does-not-exist',
+        stackArtifacts: assembly.stacks,
+      });
 
-        await getExecutor({
-          sdk,
-          constructPath: 'Stack/does-not-exist',
-          stackArtifacts: assembly.stacks,
-        });
-      }).rejects.toThrow(/could not find.*construct path/i);
+      // THEN
+      expect(executor).toBeUndefined();
     });
   });
 });
