@@ -32,7 +32,7 @@ describe('Executor', () => {
 
     test('L1 state machine executor', async () => {
       // WHEN
-      const executor = await Executor.findExecutor({
+      const executor = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
@@ -45,7 +45,7 @@ describe('Executor', () => {
 
     test('L2 state machine executor', async () => {
       // WHEN
-      const executor = await Executor.findExecutor({
+      const executor = await Executor.find({
         sdk: sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
@@ -86,7 +86,7 @@ describe('Executor', () => {
 
     test('L1 lambda function executor', async () => {
       // WHEN
-      const executor = await Executor.findExecutor({
+      const executor = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
@@ -99,7 +99,7 @@ describe('Executor', () => {
 
     test('L2 lambda function executor', async () => {
       // WHEN
-      const executor = await Executor.findExecutor({
+      const executor = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
@@ -119,7 +119,7 @@ describe('Executor', () => {
       const sdk = new MockAwsSdk();
 
       // WHEN
-      const executor = await Executor.findExecutor({
+      const executor = await Executor.find({
         sdk,
         constructPath: 'Stack/does-not-exist',
         assembly,
@@ -142,7 +142,7 @@ describe('Executor', () => {
 
       // WHEN
       await expect(async () => {
-        await Executor.findExecutor({
+        await Executor.find({
           sdk: new MockAwsSdk(),
           assembly,
           constructPath: 'Stack',

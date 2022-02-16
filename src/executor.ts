@@ -23,7 +23,7 @@ export abstract class Executor {
   /**
    * Find an executor
    */
-  static async findExecutor(options: FindExecutorOptions): Promise<Executor | undefined> {
+  static async find(options: FindExecutorOptions): Promise<Executor | undefined> {
     return findExecutor(options);
   }
 

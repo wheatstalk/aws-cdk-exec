@@ -50,7 +50,7 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
   const assembly = new cxapi.CloudAssembly(options.app);
 
   try {
-    const executor = await Executor.findExecutor({
+    const executor = await Executor.find({
       assembly,
       constructPath: options.constructPath,
       sdk: new AwsSdk(),
