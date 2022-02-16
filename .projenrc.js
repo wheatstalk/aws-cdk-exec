@@ -38,7 +38,6 @@ project.addGitIgnore('/.idea');
 
 project.package.addBin({
   'cdk-exec': 'lib/cli/cdk-exec.js',
-  'cdk-cloudexec': 'lib/cli/cdk-exec.js',
 });
 
 // Integration Test Setup
