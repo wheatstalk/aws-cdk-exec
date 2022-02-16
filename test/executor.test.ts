@@ -3,13 +3,12 @@ import * as os from 'os';
 import * as path from 'path';
 import { App, CfnElement, Stack } from 'aws-cdk-lib';
 import * as aws_lambda from 'aws-cdk-lib/aws-lambda';
-import * as aws_sqs from 'aws-cdk-lib/aws-sqs';
 import * as aws_stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
 import * as cxapi from 'aws-cdk-lib/cx-api';
 import AWS from 'aws-sdk';
 import { Construct } from 'constructs';
 import { IAwsSdk } from '../src/aws-sdk';
-import { getExecutor, StateMachineExecutor, LambdaFunctionExecutor } from '../src/executor';
+import { getExecutor, StateMachineExecutor, LambdaFunctionExecutor, findMatchingResources } from '../src/executor';
 
 function testAssembly(cb: (app: App) => void): cxapi.CloudAssembly {
   const appDir = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp'));
@@ -77,6 +76,42 @@ class MockAwsSdk implements IAwsSdk {
   }
 }
 
+test('findMatchingResources', () => {
+  const assembly = testAssembly(app => {
+    const stack = new TestStack(app, 'Stack');
+    new aws_stepfunctions.StateMachine(stack, 'Boom1', {
+      definition: new aws_stepfunctions.Succeed(stack, 'Succeed1'),
+    });
+    new aws_stepfunctions.StateMachine(stack, 'Boom2', {
+      definition: new aws_stepfunctions.Succeed(stack, 'Succeed2'),
+    });
+  });
+
+  // WHEN
+  const results = findMatchingResources({
+    constructPath: 'Stack',
+    types: ['AWS::StepFunctions::StateMachine'],
+    assembly,
+  });
+
+  // THEN
+  expect(results.length).toEqual(2);
+  expect(results).toEqual([
+    {
+      constructPath: 'Stack/Boom1/Resource',
+      logicalId: 'STACKXBOOM1XRESOURCE',
+      stackName: 'Stack',
+      type: 'AWS::StepFunctions::StateMachine',
+    },
+    {
+      constructPath: 'Stack/Boom2/Resource',
+      logicalId: 'STACKXBOOM2XRESOURCE',
+      stackName: 'Stack',
+      type: 'AWS::StepFunctions::StateMachine',
+    },
+  ]);
+});
+
 describe('getExecutor', () => {
   describe('state machine', () => {
     // GIVEN
@@ -108,7 +143,7 @@ describe('getExecutor', () => {
       const executor = await getExecutor({
         sdk,
         constructPath: 'Stack/Boom/Resource',
-        stackArtifacts: assembly.stacks,
+        assembly,
       });
 
       // THEN
@@ -121,7 +156,7 @@ describe('getExecutor', () => {
       const executor = await getExecutor({
         sdk: sdk,
         constructPath: 'Stack/Boom/Resource',
-        stackArtifacts: assembly.stacks,
+        assembly,
       });
 
       // THEN
@@ -162,7 +197,7 @@ describe('getExecutor', () => {
       const executor = await getExecutor({
         sdk,
         constructPath: 'Stack/Boom/Resource',
-        stackArtifacts: assembly.stacks,
+        assembly,
       });
 
       // THEN
@@ -175,7 +210,7 @@ describe('getExecutor', () => {
       const executor = await getExecutor({
         sdk,
         constructPath: 'Stack/Boom/Resource',
-        stackArtifacts: assembly.stacks,
+        assembly,
       });
 
       // THEN
@@ -185,36 +220,6 @@ describe('getExecutor', () => {
   });
 
   describe('errors', () => {
-    test('errors on unsupported type', async () => {
-      const assembly = testAssembly(app => {
-        const stack = new TestStack(app, 'Stack');
-        new aws_sqs.Queue(stack, 'Boom');
-      });
-      const sdk = new MockAwsSdk();
-      sdk.stubCloudFormation({
-        describeStackResources: async () => {
-          return {
-            StackResources: [{
-              ResourceType: 'AWS::SQS::Queue',
-              ResourceStatus: 'CREATE_COMPLETE',
-              LastUpdatedTimestamp: new Date(),
-              LogicalResourceId: 'STACKXBOOMXRESOURCE',
-              PhysicalResourceId: 'physical-boom',
-            }],
-          };
-        },
-      });
-
-      // WHEN
-      await expect(async () => {
-        await getExecutor({
-          sdk,
-          constructPath: 'Stack/Boom',
-          stackArtifacts: assembly.stacks,
-        });
-      }).rejects.toThrow(/unsupported resource type/i);
-    });
-
     test('undefined when path not found', async () => {
       const assembly = testAssembly(app => {
         new Stack(app, 'Stack');
@@ -225,11 +230,32 @@ describe('getExecutor', () => {
       const executor = await getExecutor({
         sdk,
         constructPath: 'Stack/does-not-exist',
-        stackArtifacts: assembly.stacks,
+        assembly,
       });
 
       // THEN
       expect(executor).toBeUndefined();
+    });
+
+    test('errors on ambiguous path', async () => {
+      const assembly = testAssembly(app => {
+        const stack = new TestStack(app, 'Stack');
+        new aws_stepfunctions.StateMachine(stack, 'Boom1', {
+          definition: new aws_stepfunctions.Succeed(stack, 'Succeed1'),
+        });
+        new aws_stepfunctions.StateMachine(stack, 'Boom2', {
+          definition: new aws_stepfunctions.Succeed(stack, 'Succeed2'),
+        });
+      });
+
+      // WHEN
+      await expect(async () => {
+        await getExecutor({
+          sdk: new MockAwsSdk(),
+          assembly,
+          constructPath: 'Stack',
+        });
+      }).rejects.toThrow(/ambiguous.*multiple/i);
     });
   });
 });
