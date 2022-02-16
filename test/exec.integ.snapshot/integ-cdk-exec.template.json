@@ -10,12 +10,15 @@
               "Effect": "Allow",
               "Principal": {
                 "Service": {
-                  "Fn::FindInMap": [
-                    "ServiceprincipalMap",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    "states"
+                  "Fn::Join": [
+                    "",
+                    [
+                      "states.",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ".amazonaws.com"
+                    ]
                   ]
                 }
               }
@@ -105,7 +108,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02MvQ6DMAyEn4U9uAV16I7ExgIPUIXEFPPjIJK0Q5R3L9AidTrf3efLIcvhmsi3TZUe04laCI2TahRb9AjW4dJ5Vo4MWwhFb0ihaLxSiFqUkiax0Q4rqXpiFEXH/z4KkjOE2kxHtWsUk5xbLSGUv929Oe8YDw6t8as6fgrDmk6skstC/IyCjUYY7OWV3SC7Q54MlihdPTuaEeqvfgAL6Jeb3AAAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02MwQ6CMBBEv4X7siLx4J2Emxf4AFPaJSyU1tBWD03/XaiaeJqdebNTY4VVIV6ulGopNQ8Yey/kAnt0j87TYwxGerbGYWwmy5KgD1ISKWgFa9jbnm5CTmwImtH8+wQsVoyd1RkdmkCLdVACY/vdPcjvTin3yNmwyfzTWKM4IzBWEc7u9Dxf8HzFupgdc7kF43kl7D76BsFEeBHQAAAA"
       },
       "Metadata": {
         "aws:cdk:path": "integ-cdk-exec/CDKMetadata/Default"
@@ -305,100 +308,6 @@
           ]
         }
       ]
-    }
-  },
-  "Mappings": {
-    "ServiceprincipalMap": {
-      "af-south-1": {
-        "states": "states.af-south-1.amazonaws.com"
-      },
-      "ap-east-1": {
-        "states": "states.ap-east-1.amazonaws.com"
-      },
-      "ap-northeast-1": {
-        "states": "states.ap-northeast-1.amazonaws.com"
-      },
-      "ap-northeast-2": {
-        "states": "states.ap-northeast-2.amazonaws.com"
-      },
-      "ap-northeast-3": {
-        "states": "states.ap-northeast-3.amazonaws.com"
-      },
-      "ap-south-1": {
-        "states": "states.ap-south-1.amazonaws.com"
-      },
-      "ap-southeast-1": {
-        "states": "states.ap-southeast-1.amazonaws.com"
-      },
-      "ap-southeast-2": {
-        "states": "states.ap-southeast-2.amazonaws.com"
-      },
-      "ap-southeast-3": {
-        "states": "states.ap-southeast-3.amazonaws.com"
-      },
-      "ca-central-1": {
-        "states": "states.ca-central-1.amazonaws.com"
-      },
-      "cn-north-1": {
-        "states": "states.cn-north-1.amazonaws.com"
-      },
-      "cn-northwest-1": {
-        "states": "states.cn-northwest-1.amazonaws.com"
-      },
-      "eu-central-1": {
-        "states": "states.eu-central-1.amazonaws.com"
-      },
-      "eu-north-1": {
-        "states": "states.eu-north-1.amazonaws.com"
-      },
-      "eu-south-1": {
-        "states": "states.eu-south-1.amazonaws.com"
-      },
-      "eu-south-2": {
-        "states": "states.eu-south-2.amazonaws.com"
-      },
-      "eu-west-1": {
-        "states": "states.eu-west-1.amazonaws.com"
-      },
-      "eu-west-2": {
-        "states": "states.eu-west-2.amazonaws.com"
-      },
-      "eu-west-3": {
-        "states": "states.eu-west-3.amazonaws.com"
-      },
-      "me-south-1": {
-        "states": "states.me-south-1.amazonaws.com"
-      },
-      "sa-east-1": {
-        "states": "states.sa-east-1.amazonaws.com"
-      },
-      "us-east-1": {
-        "states": "states.us-east-1.amazonaws.com"
-      },
-      "us-east-2": {
-        "states": "states.us-east-2.amazonaws.com"
-      },
-      "us-gov-east-1": {
-        "states": "states.us-gov-east-1.amazonaws.com"
-      },
-      "us-gov-west-1": {
-        "states": "states.us-gov-west-1.amazonaws.com"
-      },
-      "us-iso-east-1": {
-        "states": "states.amazonaws.com"
-      },
-      "us-iso-west-1": {
-        "states": "states.amazonaws.com"
-      },
-      "us-isob-east-1": {
-        "states": "states.amazonaws.com"
-      },
-      "us-west-1": {
-        "states": "states.us-west-1.amazonaws.com"
-      },
-      "us-west-2": {
-        "states": "states.us-west-2.amazonaws.com"
-      }
     }
   },
   "Parameters": {
