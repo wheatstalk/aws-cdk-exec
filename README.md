@@ -1,8 +1,7 @@
 # AWS CDK Exec
 
-Provides `cdk-exec`, a command to tighten up your AWS CDK development loop by
-helping you find and execute the physical resources for your lambdas and state
-machines, with or without input.
+Provides `cdk-exec`, an AWS CDK dev tool to quickly find and execute your
+Lambdas and State Machines in AWS.
 
 ```
 $ cdk-exec integ-cdk-exec/Function --input '{"succeed":true}'
@@ -25,6 +24,9 @@ Output:
 First, add `@wheatstalk/aws-cdk-exec` to your project's dev dependencies.
 Then synthesize your app to a `cdk.out` directory. Once synthesized there, you
 can execute one of your resources with `cdk-exec`.
+
+> If you're using `cdk watch`, the CDK will keep your `cdk.out` up to date, so
+> when you use watch mode, you can run `cdk-exec` (roughly) at will.
 
 ## Full Example
 
@@ -69,9 +71,6 @@ directory), so the first step is to synthesize your app:
 ```console
 $ cdk synth --output cdk.out
 ```
-
-> If you're using `cdk watch`, the CDK will keep your `cdk.out` up to date so
-> that you can start watch mode and use `cdk-exec` (roughly) at will.
 
 **Execute a state machine with input**
 
