@@ -40,7 +40,7 @@ describe('findMatchingResources', () => {
     ]);
   });
 
-  describe('metadata', () => {
+  describe('metadata match', () => {
     const assembly = testAssembly(app => {
       const stack = new TestStack(app, 'Stack');
       const sfn1 = new aws_stepfunctions.StateMachine(stack, 'Boom1', {

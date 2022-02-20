@@ -3,7 +3,7 @@ import * as cxapi from 'aws-cdk-lib/cx-api';
 import chalk from 'chalk';
 import * as yargs from 'yargs';
 import { AwsSdk } from '../aws-sdk';
-import { AmbiguousPathError, Executor } from '../executor';
+import { Executor } from '../executor';
 import { MetadataMatch } from '../find-matching-resources';
 
 async function main(): Promise<number> {
@@ -74,9 +74,9 @@ export interface CdkExecOptions {
 }
 
 export async function cdkExec(options: CdkExecOptions): Promise<number> {
-  const assembly = new cxapi.CloudAssembly(options.app);
-
   try {
+    const assembly = new cxapi.CloudAssembly(options.app);
+
     const executors = await Executor.find({
       assembly,
       constructPath: options.constructPath,
@@ -122,9 +122,11 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
 
     return error ? 1 : 0;
   } catch (e) {
-    if (e instanceof AmbiguousPathError) {
-      console.log('\n❌  Matched multiple resources: %s', e.matchingPaths.join(', '));
-      return 1;
+    if (e instanceof Error) {
+      if (e.stack && /new CloudAssembly/.test(e.stack)) {
+        console.log('\n❌  AWS CDK lib error: %s', e.message);
+        return 1;
+      }
     }
 
     throw e;

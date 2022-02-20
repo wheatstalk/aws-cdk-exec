@@ -61,12 +61,12 @@ export function findMatchingResources(options: FindMatchingResourceOptions): Mat
         continue;
       }
 
-      const resourceConstructPath = resourceMetadata[cxapi.PATH_METADATA_KEY] as string;
-      if (!constructPath || resourceConstructPath === constructPath || resourceConstructPath.startsWith(`${constructPath}/`)) {
+      const pathMetadata = resourceMetadata[cxapi.PATH_METADATA_KEY] as string;
+      if (!constructPath || pathMetadata === constructPath || pathMetadata.startsWith(`${constructPath}/`)) {
         matches.push({
           logicalResourceId: logicalId,
           type,
-          constructPath: resourceConstructPath,
+          constructPath: pathMetadata,
           stackName: stack.stackName,
         });
       }
