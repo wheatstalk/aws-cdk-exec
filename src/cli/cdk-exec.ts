@@ -16,7 +16,7 @@ async function main(): Promise<number> {
       .option('app', {
         type: 'string',
         alias: 'a',
-        default: 'cdk.out',
+        default: process.env.CDK_APP ?? 'cdk.out',
         description: 'Path to your `cdk.out` cloud assembly directory',
       })
       .option('all', {
@@ -85,7 +85,7 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
     });
 
     if (executors.length === 0) {
-      console.log('❌  Could not find a construct at the provided path');
+      console.log('❌  No matching executable constructs found');
       return 1;
     }
 
