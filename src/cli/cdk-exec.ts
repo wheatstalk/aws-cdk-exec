@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import * as yargs from 'yargs';
 import { AwsSdk } from '../aws-sdk';
 import { AmbiguousPathError, Executor } from '../executor';
+import { MetadataMatch } from '../find-matching-resources';
 
 async function main(): Promise<number> {
   const args: any = yargs
@@ -22,6 +23,11 @@ async function main(): Promise<number> {
         type: 'boolean',
         description: 'Execute all matching resources',
       })
+      .option('metadata', {
+        type: 'array',
+        alias: 'm',
+        description: 'Match resources with the given metadata key or key=value',
+      })
       .option('input', {
         type: 'string',
         description: 'Execute with custom JSON input',
@@ -35,6 +41,7 @@ async function main(): Promise<number> {
     constructPath: args.path,
     app: args.app,
     all: args.all,
+    metadata: args.metadata ? new MetadataMatch(args.metadata) : undefined,
     input: args.input,
   });
 }
@@ -56,6 +63,11 @@ export interface CdkExecOptions {
   readonly constructPath?: string;
 
   /**
+   * Match records with the given metadata
+   */
+  readonly metadata?: MetadataMatch;
+
+  /**
    * Execution input.
    */
   readonly input?: string;
@@ -68,6 +80,7 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
     const executors = await Executor.find({
       assembly,
       constructPath: options.constructPath,
+      metadata: options.metadata,
       sdk: new AwsSdk(),
     });
 
