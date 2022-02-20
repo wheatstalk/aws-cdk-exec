@@ -3,7 +3,8 @@ import * as cxapi from 'aws-cdk-lib/cx-api';
 import chalk from 'chalk';
 import * as yargs from 'yargs';
 import { AwsSdk } from '../aws-sdk';
-import { AmbiguousPathError, Executor } from '../executor';
+import { Executor } from '../executor';
+import { MetadataMatch } from '../find-matching-resources';
 
 async function main(): Promise<number> {
   const args: any = yargs
@@ -12,10 +13,24 @@ async function main(): Promise<number> {
         type: 'string',
         description: 'Path to executable construct resource',
       })
-      .option('app', { type: 'string', alias: 'a', default: 'cdk.out' })
+      .option('app', {
+        type: 'string',
+        alias: 'a',
+        default: 'cdk.out',
+        description: 'Path to your `cdk.out` cloud assembly directory',
+      })
+      .option('all', {
+        type: 'boolean',
+        description: 'Execute all matching resources',
+      })
+      .option('metadata', {
+        type: 'array',
+        alias: 'm',
+        description: 'Match resources with the given metadata key or key=value',
+      })
       .option('input', {
         type: 'string',
-        desc: 'Execute with custom JSON input',
+        description: 'Execute with custom JSON input',
       }))
     .argv;
 
@@ -25,6 +40,8 @@ async function main(): Promise<number> {
   return cdkExec({
     constructPath: args.path,
     app: args.app,
+    all: args.all,
+    metadata: args.metadata ? new MetadataMatch(args.metadata) : undefined,
     input: args.input,
   });
 }
@@ -36,9 +53,19 @@ export interface CdkExecOptions {
   readonly app: string;
 
   /**
+   * Execute all matches rather than erroring on ambiguity
+   */
+  readonly all: string;
+
+  /**
    * Path of the construct to execute.
    */
   readonly constructPath?: string;
+
+  /**
+   * Match records with the given metadata
+   */
+  readonly metadata?: MetadataMatch;
 
   /**
    * Execution input.
@@ -47,38 +74,59 @@ export interface CdkExecOptions {
 }
 
 export async function cdkExec(options: CdkExecOptions): Promise<number> {
-  const assembly = new cxapi.CloudAssembly(options.app);
-
   try {
-    const executor = await Executor.find({
+    const assembly = new cxapi.CloudAssembly(options.app);
+
+    const executors = await Executor.find({
       assembly,
       constructPath: options.constructPath,
+      metadata: options.metadata,
       sdk: new AwsSdk(),
     });
 
-    if (!executor) {
+    if (executors.length === 0) {
       console.log('❌  Could not find a construct at the provided path');
       return 1;
     }
 
-    console.log('✨  Executing %s', executor.physicalResourceId);
-    const result = await executor.execute(options.input);
-
-    if (result.output) {
-      console.log('\nOutput:\n%s', chalk.cyan(JSON.stringify(result.output, null, 2)));
-    }
-
-    if (result.error) {
-      console.log('\n❌  Execution failed: %s', result.error);
+    if (!options.all && executors.length > 1) {
+      console.log('\n❌  Matched multiple resources: %s', executors.map(e => e.constructPath).join(', '));
       return 1;
     }
 
-    console.log('\n✅  Execution succeeded');
-    return 0;
+    const executorResults = await Promise.all(
+      executors.map(async (executor) => {
+        console.log('⚡  Executing %s (%s)', executor.constructPath, executor.physicalResourceId);
+        const result = await executor.execute(options.input);
+        return {
+          executor,
+          ...result,
+        };
+      }),
+    );
+
+    let error = false;
+    for (const result of executorResults) {
+      console.log('\n\n✨  Final status of %s', result.executor.constructPath);
+      if (result.output) {
+        console.log('\nOutput:\n%s', chalk.cyan(JSON.stringify(result.output, null, 2)));
+      }
+
+      if (result.error) {
+        error = true;
+        console.log('\n❌  Execution failed: %s', result.error);
+      } else {
+        console.log('\n✅  Execution succeeded');
+      }
+    }
+
+    return error ? 1 : 0;
   } catch (e) {
-    if (e instanceof AmbiguousPathError) {
-      console.log('\n❌  Matched multiple resources: %s', e.matchingPaths.join(', '));
-      return 1;
+    if (e instanceof Error) {
+      if (e.stack && /new CloudAssembly/.test(e.stack)) {
+        console.log('\n❌  AWS CDK lib error: %s', e.message);
+        return 1;
+      }
     }
 
     throw e;

@@ -32,28 +32,28 @@ describe('Executor', () => {
 
     test('L1 state machine executor', async () => {
       // WHEN
-      const executor = await Executor.find({
+      const executors = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
       });
 
       // THEN
-      expect(executor).toBeInstanceOf(StateMachineExecutor);
-      expect(executor!.physicalResourceId).toEqual('physical-boom');
+      expect(executors[0]).toBeInstanceOf(StateMachineExecutor);
+      expect(executors[0].physicalResourceId).toEqual('physical-boom');
     });
 
     test('L2 state machine executor', async () => {
       // WHEN
-      const executor = await Executor.find({
+      const executors = await Executor.find({
         sdk: sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
       });
 
       // THEN
-      expect(executor).toBeInstanceOf(StateMachineExecutor);
-      expect(executor!.physicalResourceId).toEqual('physical-boom');
+      expect(executors[0]).toBeInstanceOf(StateMachineExecutor);
+      expect(executors[0].physicalResourceId).toEqual('physical-boom');
     });
   });
 
@@ -86,33 +86,33 @@ describe('Executor', () => {
 
     test('L1 lambda function executor', async () => {
       // WHEN
-      const executor = await Executor.find({
+      const executors = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
       });
 
       // THEN
-      expect(executor).toBeInstanceOf(LambdaFunctionExecutor);
-      expect(executor!.physicalResourceId).toEqual('physical-boom');
+      expect(executors[0]).toBeInstanceOf(LambdaFunctionExecutor);
+      expect(executors[0].physicalResourceId).toEqual('physical-boom');
     });
 
     test('L2 lambda function executor', async () => {
       // WHEN
-      const executor = await Executor.find({
+      const executors = await Executor.find({
         sdk,
         constructPath: 'Stack/Boom/Resource',
         assembly,
       });
 
       // THEN
-      expect(executor).toBeInstanceOf(LambdaFunctionExecutor);
-      expect(executor!.physicalResourceId).toEqual('physical-boom');
+      expect(executors[0]).toBeInstanceOf(LambdaFunctionExecutor);
+      expect(executors[0].physicalResourceId).toEqual('physical-boom');
     });
   });
 
   describe('errors', () => {
-    test('undefined when path not found', async () => {
+    test('path not found', async () => {
       const assembly = testAssembly(app => {
         new Stack(app, 'Stack');
       });
@@ -126,28 +126,7 @@ describe('Executor', () => {
       });
 
       // THEN
-      expect(executor).toBeUndefined();
-    });
-
-    test('errors on ambiguous path', async () => {
-      const assembly = testAssembly(app => {
-        const stack = new TestStack(app, 'Stack');
-        new aws_stepfunctions.StateMachine(stack, 'Boom1', {
-          definition: new aws_stepfunctions.Succeed(stack, 'Succeed1'),
-        });
-        new aws_stepfunctions.StateMachine(stack, 'Boom2', {
-          definition: new aws_stepfunctions.Succeed(stack, 'Succeed2'),
-        });
-      });
-
-      // WHEN
-      await expect(async () => {
-        await Executor.find({
-          sdk: new MockAwsSdk(),
-          assembly,
-          constructPath: 'Stack',
-        });
-      }).rejects.toThrow(/multiple/i);
+      expect(executor).toEqual([]);
     });
   });
 });
@@ -177,6 +156,8 @@ describe('StateMachineExecutor', () => {
 
     // WHEN
     const executor = new StateMachineExecutor({
+      constructPath: 'some/path',
+      logicalResourceId: 'SomePath',
       physicalResourceId: 'state-machine-arn',
       stepFunctions,
     });
@@ -210,6 +191,8 @@ describe('StateMachineExecutor', () => {
 
     // WHEN
     const executor = new StateMachineExecutor({
+      constructPath: 'some/path',
+      logicalResourceId: 'SomePath',
       physicalResourceId: 'state-machine-arn',
       stepFunctions,
     });
@@ -226,6 +209,8 @@ describe('StateMachineExecutor', () => {
 
     const executor = new StateMachineExecutor({
       physicalResourceId: 'state-machine-arn',
+      constructPath: 'some/path',
+      logicalResourceId: 'SomePath',
       stepFunctions,
     });
 
@@ -252,6 +237,8 @@ describe('LambdaFunctionExecutor', () => {
     // WHEN
     const executor = new LambdaFunctionExecutor({
       lambda,
+      constructPath: 'some/path',
+      logicalResourceId: 'SomePath',
       physicalResourceId: 'some-function-name',
     });
 
@@ -285,6 +272,8 @@ describe('LambdaFunctionExecutor', () => {
     // WHEN
     const executor = new LambdaFunctionExecutor({
       lambda,
+      constructPath: 'some/path',
+      logicalResourceId: 'SomePath',
       physicalResourceId: 'some-function-name',
     });
 
@@ -299,6 +288,8 @@ describe('LambdaFunctionExecutor', () => {
     const lambda = sdk.lambda();
 
     const executor = new LambdaFunctionExecutor({
+      constructPath: 'some/path',
+      logicalResourceId: 'SomePath',
       physicalResourceId: 'state-machine-arn',
       lambda,
     });

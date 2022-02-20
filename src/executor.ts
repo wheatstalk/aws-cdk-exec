@@ -1,7 +1,7 @@
 import * as cxapi from 'aws-cdk-lib/cx-api';
 import * as AWS from 'aws-sdk';
 import { IAwsSdk, LazyListStackResources } from './aws-sdk';
-import { findMatchingResources, MatchingResource } from './find-matching-resources';
+import { findMatchingResources, MatchingResource, MetadataMatch } from './find-matching-resources';
 
 const STATE_MACHINE_TYPE = 'AWS::StepFunctions::StateMachine';
 const LAMBDA_TYPE = 'AWS::Lambda::Function';
@@ -10,6 +10,16 @@ const LAMBDA_TYPE = 'AWS::Lambda::Function';
  * Options for `StateMachineExecutor`
  */
 export interface ExecutorOptions {
+  /**
+   * The construct path of the matching resource.
+   */
+  readonly constructPath: string;
+
+  /**
+   * The logical id of the matching resource.
+   */
+  readonly logicalResourceId: string;
+
   /**
    * The physical resource of the resource to execute.
    */
@@ -23,14 +33,18 @@ export abstract class Executor {
   /**
    * Find an executor
    */
-  static async find(options: FindExecutorOptions): Promise<Executor | undefined> {
-    return findExecutor(options);
+  static async find(options: FindExecutorOptions): Promise<Executor[]> {
+    return findExecutors(options);
   }
 
+  readonly constructPath: string;
   readonly physicalResourceId: string;
+  readonly logicalResourceId: string;
 
   protected constructor(options: ExecutorOptions) {
     this.physicalResourceId = options.physicalResourceId;
+    this.constructPath = options.constructPath;
+    this.logicalResourceId = options.logicalResourceId;
   }
 
   /**
@@ -60,6 +74,11 @@ export interface FindExecutorOptions {
    * Path to the resource containing the state machine to execute.
    */
   readonly constructPath?: string;
+
+  /**
+   * Metadata of the resources to match.
+   */
+  readonly metadata?: MetadataMatch;
 
   /**
    * AWS SDK
@@ -200,51 +219,62 @@ function getLambdaErrorMessage(output: any) {
 /**
  * Finds an executor.
  */
-async function findExecutor(options: FindExecutorOptions): Promise<Executor | undefined> {
-  const { assembly, constructPath, sdk } = options;
+async function findExecutors(options: FindExecutorOptions): Promise<Executor[]> {
+  const { assembly, constructPath, sdk, metadata } = options;
 
   const matchingResources = findMatchingResources({
     assembly,
     constructPath,
+    metadata,
     types: [
       STATE_MACHINE_TYPE,
       LAMBDA_TYPE,
     ],
   });
 
-  if (matchingResources.length === 0) {
-    return;
+  const lazyListStackResources: Record<string, LazyListStackResources> = {};
+  function getLazyListStackResources(matchingResource: MatchingResource) {
+    if (!lazyListStackResources[matchingResource.stackName]) {
+      lazyListStackResources[matchingResource.stackName] = new LazyListStackResources(sdk, matchingResource.stackName);
+    }
+
+    return lazyListStackResources[matchingResource.stackName];
   }
 
-  if (matchingResources.length > 1) {
-    throw new AmbiguousPathError(matchingResources);
-  }
+  return Promise.all(
+    matchingResources.map(async (matchingResource) => {
+      // Cache lazy lists
+      const listStackResources = getLazyListStackResources(matchingResource);
 
-  const [matchingResource] = matchingResources;
-  const listStackResources = new LazyListStackResources(sdk, matchingResource.stackName);
-  const stackResource = (await listStackResources.listStackResources())
-    .find(sr => sr.LogicalResourceId === matchingResource.logicalId);
+      const stackResource = (await listStackResources.listStackResources())
+        .find(sr => sr.LogicalResourceId === matchingResource.logicalResourceId);
 
-  if (!stackResource || !stackResource.PhysicalResourceId) {
-    throw new Error(`Could not find the physical resource id for ${constructPath}`);
-  }
+      if (!stackResource || !stackResource.PhysicalResourceId) {
+        throw new Error(`Could not find the physical resource id for ${constructPath}`);
+      }
 
-  switch (stackResource.ResourceType) {
-    case STATE_MACHINE_TYPE:
-      return new StateMachineExecutor({
-        physicalResourceId: stackResource.PhysicalResourceId,
-        stepFunctions: sdk.stepFunctions(),
-      });
+      switch (stackResource.ResourceType) {
+        case STATE_MACHINE_TYPE:
+          return new StateMachineExecutor({
+            constructPath: matchingResource.constructPath,
+            logicalResourceId: matchingResource.logicalResourceId,
+            physicalResourceId: stackResource.PhysicalResourceId,
+            stepFunctions: sdk.stepFunctions(),
+          });
 
-    case LAMBDA_TYPE:
-      return new LambdaFunctionExecutor({
-        physicalResourceId: stackResource.PhysicalResourceId,
-        lambda: sdk.lambda(),
-      });
+        case LAMBDA_TYPE:
+          return new LambdaFunctionExecutor({
+            constructPath: matchingResource.constructPath,
+            logicalResourceId: matchingResource.logicalResourceId,
+            physicalResourceId: stackResource.PhysicalResourceId,
+            lambda: sdk.lambda(),
+          });
 
-    default:
-      throw new Error(`Unsupported resource type ${stackResource.ResourceType}`);
-  }
+        default:
+          throw new Error(`Unsupported resource type ${stackResource.ResourceType}`);
+      }
+    }),
+  );
 }
 
 /**

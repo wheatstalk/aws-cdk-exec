@@ -12,6 +12,11 @@ export interface FindMatchingResourceOptions {
   readonly constructPath?: string;
 
   /**
+   * Metadata to search for.
+   */
+  readonly metadata?: MetadataMatch;
+
+  /**
    * Match only the given resource types.
    */
   readonly types: string[];
@@ -25,6 +30,7 @@ export function findMatchingResources(options: FindMatchingResourceOptions): Mat
     constructPath,
     types,
     assembly,
+    metadata,
   } = options;
 
   const matches = Array<MatchingResource>();
@@ -41,7 +47,8 @@ export function findMatchingResources(options: FindMatchingResourceOptions): Mat
       }
 
       const resourceRecord = resource as Record<string, any>;
-      if (typeof resourceRecord.Metadata !== 'object') {
+      const resourceMetadata = resourceRecord.Metadata;
+      if (typeof resourceMetadata !== 'object') {
         continue;
       }
 
@@ -50,12 +57,16 @@ export function findMatchingResources(options: FindMatchingResourceOptions): Mat
         continue;
       }
 
-      const resourceConstructPath = resourceRecord.Metadata[cxapi.PATH_METADATA_KEY] as string;
-      if (!constructPath || resourceConstructPath === constructPath || resourceConstructPath.startsWith(`${constructPath}/`)) {
+      if (metadata && !metadata.matches(resourceMetadata)) {
+        continue;
+      }
+
+      const pathMetadata = resourceMetadata[cxapi.PATH_METADATA_KEY] as string;
+      if (!constructPath || pathMetadata === constructPath || pathMetadata.startsWith(`${constructPath}/`)) {
         matches.push({
-          logicalId,
+          logicalResourceId: logicalId,
           type,
-          constructPath: resourceConstructPath,
+          constructPath: pathMetadata,
           stackName: stack.stackName,
         });
       }
@@ -74,7 +85,7 @@ export interface MatchingResource {
   /**
    * Logical ID of the resource.
    */
-  readonly logicalId: string;
+  readonly logicalResourceId: string;
 
   /**
    * The CloudFormation type.
@@ -85,4 +96,33 @@ export interface MatchingResource {
    * The resource's construct path metadata.
    */
   readonly constructPath: string;
+}
+
+/**
+ * Match resource metadata with the given specification.
+ */
+export class MetadataMatch {
+  readonly spec: Record<string, string | undefined>;
+
+  constructor(spec: string[]) {
+    this.spec = Object.fromEntries(
+      spec.map(metadata => metadata.split('=', 2)),
+    );
+  }
+
+  matches(resourceMetadata: Record<string, string>) {
+    for (const entry of Object.entries(this.spec)) {
+      const [key, value] = entry;
+
+      if (resourceMetadata[key] === undefined) {
+        return false;
+      }
+
+      if (value !== undefined && resourceMetadata[key] !== value) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }
