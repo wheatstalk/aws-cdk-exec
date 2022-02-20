@@ -16,7 +16,7 @@ async function main(): Promise<number> {
       .option('app', {
         type: 'string',
         alias: 'a',
-        default: process.env.CDK_APP ?? 'cdk.out',
+        default: process.env.CDK_EXEC_APP ?? 'cdk.out',
         description: 'Path to your `cdk.out` cloud assembly directory',
       })
       .option('all', {
