@@ -12,10 +12,19 @@ async function main(): Promise<number> {
         type: 'string',
         description: 'Path to executable construct resource',
       })
-      .option('app', { type: 'string', alias: 'a', default: 'cdk.out' })
+      .option('app', {
+        type: 'string',
+        alias: 'a',
+        default: 'cdk.out',
+        description: 'Path to your `cdk.out` cloud assembly directory',
+      })
+      .option('all', {
+        type: 'boolean',
+        description: 'Execute all matching resources',
+      })
       .option('input', {
         type: 'string',
-        desc: 'Execute with custom JSON input',
+        description: 'Execute with custom JSON input',
       }))
     .argv;
 
@@ -25,6 +34,7 @@ async function main(): Promise<number> {
   return cdkExec({
     constructPath: args.path,
     app: args.app,
+    all: args.all,
     input: args.input,
   });
 }
@@ -34,6 +44,11 @@ export interface CdkExecOptions {
    * App directory.
    */
   readonly app: string;
+
+  /**
+   * Execute all matches rather than erroring on ambiguity
+   */
+  readonly all: string;
 
   /**
    * Path of the construct to execute.
@@ -50,31 +65,49 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
   const assembly = new cxapi.CloudAssembly(options.app);
 
   try {
-    const executor = await Executor.find({
+    const executors = await Executor.find({
       assembly,
       constructPath: options.constructPath,
       sdk: new AwsSdk(),
     });
 
-    if (!executor) {
+    if (executors.length === 0) {
       console.log('❌  Could not find a construct at the provided path');
       return 1;
     }
 
-    console.log('✨  Executing %s', executor.physicalResourceId);
-    const result = await executor.execute(options.input);
-
-    if (result.output) {
-      console.log('\nOutput:\n%s', chalk.cyan(JSON.stringify(result.output, null, 2)));
-    }
-
-    if (result.error) {
-      console.log('\n❌  Execution failed: %s', result.error);
+    if (!options.all && executors.length > 1) {
+      console.log('\n❌  Matched multiple resources: %s', executors.map(e => e.constructPath).join(', '));
       return 1;
     }
 
-    console.log('\n✅  Execution succeeded');
-    return 0;
+    const executorResults = await Promise.all(
+      executors.map(async (executor) => {
+        console.log('⚡  Executing %s (%s)', executor.constructPath, executor.physicalResourceId);
+        const result = await executor.execute(options.input);
+        return {
+          executor,
+          ...result,
+        };
+      }),
+    );
+
+    let error = false;
+    for (const result of executorResults) {
+      console.log('\n\n✨  Final status of %s', result.executor.constructPath);
+      if (result.output) {
+        console.log('\nOutput:\n%s', chalk.cyan(JSON.stringify(result.output, null, 2)));
+      }
+
+      if (result.error) {
+        error = true;
+        console.log('\n❌  Execution failed: %s', result.error);
+      } else {
+        console.log('\n✅  Execution succeeded');
+      }
+    }
+
+    return error ? 1 : 0;
   } catch (e) {
     if (e instanceof AmbiguousPathError) {
       console.log('\n❌  Matched multiple resources: %s', e.matchingPaths.join(', '));

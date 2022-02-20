@@ -5,7 +5,10 @@ Lambdas and State Machines in AWS.
 
 ```
 $ cdk-exec integ-cdk-exec/Function --input '{"succeed":true}'
-✨  Executing integ-cdk-exec-Function76856677-k5ehIzbG2T6S
+⚡  Executing integ-cdk-exec/Function/Resource (integ-cdk-exec-Function76856677-k5ehIzbG2T6S)
+
+
+✨  Final status of integ-cdk-exec/Function/Resource
 
 Output:
 {
@@ -76,7 +79,10 @@ $ cdk synth --output cdk.out
 
 ```
 $ cdk-exec integ-cdk-exec/StateMachine --input '{"succeed":true}'
-✨  Executing arn:aws:states:REGION:000000000000:stateMachine:StateMachine2E01A3A5-8z4XHXAvT3qq
+⚡  Executing integ-cdk-exec/StateMachine/Resource (arn:aws:states:REGION:000000000000:stateMachine:StateMachine2E01A3A5-8z4XHXAvT3qq)
+
+
+✨  Final status of integ-cdk-exec/StateMachine/Resource
 
 Output:
 {
@@ -90,7 +96,10 @@ Output:
 
 ```
 $ cdk-exec integ-cdk-exec/Function --input '{"succeed":true}'
-✨  Executing integ-cdk-exec-Function76856677-k5ehIzbG2T6S
+⚡  Executing integ-cdk-exec/Function/Resource (integ-cdk-exec-Function76856677-k5ehIzbG2T6S)
+
+
+✨  Final status of integ-cdk-exec/Function/Resource (integ-cdk-exec-Function76856677-k5ehIzbG2T6S)
 
 Output:
 {
@@ -105,7 +114,10 @@ Output:
 
 ```
 $ cdk-exec --app path/to/cdkout integ-cdk-exec/Function --input '{"json":"here"}'
-✨  Executing integ-cdk-exec-Function76856677-k5ehIzbG2T6S
+⚡  Executing integ-cdk-exec/Function/Resource (integ-cdk-exec-Function76856677-k5ehIzbG2T6S)
+
+
+✨  Final status of integ-cdk-exec/Function/Resource
 
 Output:
 {
@@ -125,8 +137,7 @@ is also a convenient shortcut when your app has only one executable resource.
 For example, if you have only one function or state machine in a stack, you
 can type `cdk-exec my-stack` and your resource will be found. If your entire
 app has only one executable resource, you can run `cdk-exec` without arguments
-to run it. However, if you provide an ambiguous path, matching more than one
-supported resource, you will receive an error message.
+to run it.
 
 **Path metadata**
 

@@ -53,7 +53,7 @@ export function findMatchingResources(options: FindMatchingResourceOptions): Mat
       const resourceConstructPath = resourceRecord.Metadata[cxapi.PATH_METADATA_KEY] as string;
       if (!constructPath || resourceConstructPath === constructPath || resourceConstructPath.startsWith(`${constructPath}/`)) {
         matches.push({
-          logicalId,
+          logicalResourceId: logicalId,
           type,
           constructPath: resourceConstructPath,
           stackName: stack.stackName,
@@ -74,7 +74,7 @@ export interface MatchingResource {
   /**
    * Logical ID of the resource.
    */
-  readonly logicalId: string;
+  readonly logicalResourceId: string;
 
   /**
    * The CloudFormation type.

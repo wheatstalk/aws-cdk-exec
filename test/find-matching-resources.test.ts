@@ -26,13 +26,13 @@ describe('findMatchingResources', () => {
     expect(results).toEqual([
       {
         constructPath: 'Stack/Boom1/Resource',
-        logicalId: 'STACKXBOOM1XRESOURCE',
+        logicalResourceId: 'STACKXBOOM1XRESOURCE',
         stackName: 'Stack',
         type: 'AWS::StepFunctions::StateMachine',
       },
       {
         constructPath: 'Stack/Boom2/Resource',
-        logicalId: 'STACKXBOOM2XRESOURCE',
+        logicalResourceId: 'STACKXBOOM2XRESOURCE',
         stackName: 'Stack',
         type: 'AWS::StepFunctions::StateMachine',
       },

@@ -7,13 +7,17 @@ import * as AWS from 'aws-sdk';
 import { Construct } from 'constructs';
 import { IAwsSdk } from '../src/aws-sdk';
 
-export function testAssembly(cb: (app: App) => void): cxapi.CloudAssembly {
+export function testAssembly(cb: (app: App) => void, pathMetadata?: boolean): cxapi.CloudAssembly {
   const appDir = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp'));
+
+  const patchMetadataContext = (pathMetadata ?? true) ? {
+    [cxapi.PATH_METADATA_ENABLE_CONTEXT]: true,
+  } : undefined;
 
   const app = new App({
     outdir: appDir,
     context: {
-      [cxapi.PATH_METADATA_ENABLE_CONTEXT]: true,
+      ...patchMetadataContext,
     },
   });
 
