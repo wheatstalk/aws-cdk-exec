@@ -189,15 +189,13 @@ describe('StateMachineExecutor', () => {
       },
       getExecutionHistory: () => {
         return {
-          events: [
-            {
-              type: 'ExecutionFailed',
-              executionFailedEventDetails: {
-                error: 'Test error',
-                cause: 'Because the test says so',
-              },
+          events: [{
+            type: 'ExecutionFailed',
+            executionFailedEventDetails: {
+              error: 'Test error',
+              cause: 'Because the test says so',
             },
-          ],
+          }],
         };
       },
     });
@@ -218,6 +216,59 @@ describe('StateMachineExecutor', () => {
     expect(result.output).toEqual({
       error: 'Test error',
       cause: 'Because the test says so',
+    });
+  });
+
+  test('fail status with nested json cause', async () => {
+    const sdk = new MockAwsSdk();
+    sdk.stubStepFunctions({
+      startExecution: () => {
+        return {
+          executionArn: 'execution-arn',
+          startDate: new Date(),
+        };
+      },
+      describeExecution: () => {
+        return {
+          status: 'FAILED',
+          stateMachineArn: 'state-machine-arn',
+          executionArn: 'execution-arn',
+          startDate: new Date(),
+        };
+      },
+      getExecutionHistory: () => {
+        return {
+          events: [{
+            type: 'ExecutionFailed',
+            executionFailedEventDetails: {
+              error: 'Test error',
+              cause: JSON.stringify({
+                nestedJson: true,
+              }),
+            },
+          }],
+        };
+      },
+    });
+
+    const stepFunctions = sdk.stepFunctions();
+
+    // WHEN
+    const executor = new StateMachineExecutor({
+      constructPath: 'some/path',
+      logicalResourceId: 'SomePath',
+      physicalResourceId: 'state-machine-arn',
+      stepFunctions,
+    });
+    const result = await executor.execute();
+
+    // THEN
+    expect(result.error).toBeDefined();
+    expect(result.output).toEqual({
+      error: 'Test error',
+      cause: {
+        nestedJson: true,
+      },
     });
   });
 
