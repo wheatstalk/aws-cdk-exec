@@ -9,17 +9,6 @@ const project = new typescript.TypeScriptProject({
   description: 'An AWS CDK Cloud Assembly-aware command to help find and execute lambda functions and state machines',
   keywords: ['cdk', 'cdk-extension', 'cli', 'lambda', 'stepfunctions'],
 
-  releaseToNpm: true,
-  npmAccess: javascript.NpmAccess.PUBLIC,
-
-  depsUpgradeOptions: {
-    ignoreProjen: false,
-  },
-  autoApproveUpgrades: true,
-  autoApproveOptions: {
-    allowedUsernames: ['misterjoshua'],
-  },
-
   deps: [
     'aws-sdk@^2.0.0',
     'yargs@^17.0.0',
@@ -37,6 +26,17 @@ const project = new typescript.TypeScriptProject({
     '@types/yargs@^17.0.0',
     'ts-node',
   ],
+
+  releaseToNpm: true,
+  npmAccess: javascript.NpmAccess.PUBLIC,
+
+  depsUpgradeOptions: {
+    ignoreProjen: false,
+  },
+  autoApproveUpgrades: true,
+  autoApproveOptions: {
+    allowedUsernames: ['misterjoshua'],
+  },
 });
 
 project.addGitIgnore('/.idea');
@@ -54,17 +54,20 @@ deployTask.exec(`rm -fr ${appDir}`);
 deployTask.exec(`cdk --app "${tsNode} test/exec.integ.ts" deploy --output ${appDir}`);
 
 const cliCmd = `${tsNode} src/cli/cdk-exec.ts --app ${appDir}`;
+project.addTask('integ:exec:succeed', {
+  exec: `${cliCmd} -am integ --input '{"succeed":true}'`,
+});
 project.addTask('integ:exec:sfn:succeed', {
-  exec: `${cliCmd} integ-cdk-exec/StateMachine --input '{"succeed":true}'`,
+  exec: `${cliCmd} -m integ=sfn --input '{"succeed":true}'`,
 });
 project.addTask('integ:exec:sfn:fail', {
-  exec: `${cliCmd} integ-cdk-exec/StateMachine`,
+  exec: `${cliCmd} -m integ=sfn integ-cdk-exec/StateMachine`,
 });
 project.addTask('integ:exec:lambda:succeed', {
-  exec: `${cliCmd} integ-cdk-exec/Function --input '{"succeed":true}'`,
+  exec: `${cliCmd} -m integ=lambda --input '{"succeed":true}'`,
 });
 project.addTask('integ:exec:lambda:fail', {
-  exec: `${cliCmd} integ-cdk-exec/Function`,
+  exec: `${cliCmd} -m integ=lambda`,
 });
 
 project.synth();

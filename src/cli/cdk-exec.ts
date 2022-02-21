@@ -15,12 +15,12 @@ async function main(): Promise<number> {
       })
       .option('app', {
         type: 'string',
-        alias: 'a',
         default: process.env.CDK_EXEC_APP ?? 'cdk.out',
         description: 'Path to your `cdk.out` cloud assembly directory',
       })
       .option('all', {
         type: 'boolean',
+        alias: 'a',
         description: 'Execute all matching resources',
       })
       .option('metadata', {

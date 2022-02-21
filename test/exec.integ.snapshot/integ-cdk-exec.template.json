@@ -46,7 +46,8 @@
         "StateMachineRoleB840431D"
       ],
       "Metadata": {
-        "aws:cdk:path": "integ-cdk-exec/StateMachine/Resource"
+        "aws:cdk:path": "integ-cdk-exec/StateMachine/Resource",
+        "integ": "sfn"
       }
     },
     "FunctionServiceRole675BB04A": {
@@ -102,7 +103,8 @@
         "FunctionServiceRole675BB04A"
       ],
       "Metadata": {
-        "aws:cdk:path": "integ-cdk-exec/Function/Resource"
+        "aws:cdk:path": "integ-cdk-exec/Function/Resource",
+        "integ": "lambda"
       }
     },
     "CDKMetadata": {
