@@ -147,7 +147,17 @@ export class StateMachineExecutor extends Executor {
         for (const event of events) {
           switch (event.type) {
             case 'ExecutionFailed':
-              return event.executionFailedEventDetails;
+              try {
+                // Decode a JSON-encoded cause, such as for when a Lambda task
+                // exception was the root cause.
+                return {
+                  ...event.executionFailedEventDetails,
+                  cause: JSON.parse(event.executionFailedEventDetails?.cause!),
+                };
+              } catch (e) {
+                return event.executionFailedEventDetails;
+              }
+
             case 'ExecutionAborted':
               return event.executionAbortedEventDetails;
             case 'ExecutionTimedOut':
