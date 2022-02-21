@@ -173,17 +173,32 @@ describe('StateMachineExecutor', () => {
   test('fail status', async () => {
     const sdk = new MockAwsSdk();
     sdk.stubStepFunctions({
-      startExecution: () => ({
-        executionArn: 'execution-arn',
-        startDate: new Date(),
-      }),
+      startExecution: () => {
+        return {
+          executionArn: 'execution-arn',
+          startDate: new Date(),
+        };
+      },
       describeExecution: () => {
-        return ({
+        return {
           status: 'FAILED',
           stateMachineArn: 'state-machine-arn',
           executionArn: 'execution-arn',
           startDate: new Date(),
-        });
+        };
+      },
+      getExecutionHistory: () => {
+        return {
+          events: [
+            {
+              type: 'ExecutionFailed',
+              executionFailedEventDetails: {
+                error: 'Test error',
+                cause: 'Because the test says so',
+              },
+            },
+          ],
+        };
       },
     });
 
@@ -200,6 +215,10 @@ describe('StateMachineExecutor', () => {
 
     // THEN
     expect(result.error).toBeDefined();
+    expect(result.output).toEqual({
+      error: 'Test error',
+      cause: 'Because the test says so',
+    });
   });
 
   test('errors when input is invalid', async () => {

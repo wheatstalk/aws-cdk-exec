@@ -136,8 +136,31 @@ export class StateMachineExecutor extends Executor {
         };
       }
 
+      // Get the end of the execution history where we should find the final
+      // events/cause for the execution's failure.
+      const history = await this.stepFunctions.getExecutionHistory({
+        executionArn: execution.executionArn,
+        reverseOrder: true,
+      }).promise();
+
+      function getErrorOutput(events: AWS.StepFunctions.HistoryEventList) {
+        for (const event of events) {
+          switch (event.type) {
+            case 'ExecutionFailed':
+              return event.executionFailedEventDetails;
+            case 'ExecutionAborted':
+              return event.executionAbortedEventDetails;
+            case 'ExecutionTimedOut':
+              return event.executionTimedOutEventDetails;
+          }
+        }
+
+        return;
+      }
+
       return {
         error: `State machine execution's final status is ${executionStatus}`,
+        output: getErrorOutput(history.events),
       };
     }
   }
@@ -275,20 +298,6 @@ async function findExecutors(options: FindExecutorOptions): Promise<Executor[]> 
       }
     }),
   );
-}
-
-/**
- * The given path is ambiguous.
- */
-export class AmbiguousPathError extends Error {
-  public readonly matchingPaths: string[];
-
-  constructor(matchingResources: MatchingResource[]) {
-    const matchingPaths = matchingResources.map(r => r.constructPath);
-    super(`The provided path matches multiple resources: ${matchingPaths.join(', ')}`);
-
-    this.matchingPaths = matchingPaths;
-  }
 }
 
 function isJsonObject(json: string) {
