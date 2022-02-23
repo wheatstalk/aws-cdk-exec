@@ -237,7 +237,7 @@ function getLambdaErrorMessage(output: any) {
  * Finds an executor.
  */
 async function findExecutors(options: FindExecutorOptions): Promise<Executor[]> {
-  const { constructPath, sdk } = options;
+  const { sdk } = options;
 
   const matchingResources = findMatchingResources({
     ...options,
@@ -265,7 +265,7 @@ async function findExecutors(options: FindExecutorOptions): Promise<Executor[]> 
         .find(sr => sr.LogicalResourceId === matchingResource.logicalResourceId);
 
       if (!stackResource || !stackResource.PhysicalResourceId) {
-        throw new Error(`Could not find the physical resource id for ${constructPath}`);
+        throw new Error(`Could not find the physical resource id for ${matchingResource.constructPath}`);
       }
 
       switch (stackResource.ResourceType) {
