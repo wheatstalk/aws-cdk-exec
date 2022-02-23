@@ -102,7 +102,7 @@ describe('findMatchingResources', () => {
     });
   });
 
-  describe('label match', () => {
+  describe('tags match', () => {
     const assembly = testAssembly(app => {
       const stack = new TestStack(app, 'Stack');
       const sfn1 = new aws_stepfunctions.StateMachine(stack, 'Boom1', {
