@@ -162,3 +162,41 @@ describe('findMatchingResources', () => {
     });
   });
 });
+
+describe('MatchBase', () => {
+  test('comma metadata separators', () => {
+    // GIVEN
+    const spec = ['first=a,second'];
+
+    // WHEN
+    const metadata = new MetadataMatch(spec);
+    const result = metadata.matches({
+      first: 'a',
+      second: Math.random().toString(),
+    });
+
+    // THEN
+    expect(result).toEqual(result);
+  });
+
+  test('comma tag separators', () => {
+    // GIVEN
+    const spec = ['first=a,second'];
+
+    // WHEN
+    const tagsMatch = new TagsMatch(spec);
+    const result = tagsMatch.matches([
+      {
+        Key: 'first',
+        Value: 'a',
+      },
+      {
+        Key: 'second',
+        Value: Math.random().toString(),
+      },
+    ]);
+
+    // THEN
+    expect(result).toEqual(true);
+  });
+});
