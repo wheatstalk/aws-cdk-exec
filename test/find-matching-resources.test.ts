@@ -1,6 +1,6 @@
-import { CfnResource } from 'aws-cdk-lib';
+import { CfnResource, Tags } from 'aws-cdk-lib';
 import * as aws_stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
-import { findMatchingResources, MetadataMatch } from '../src/find-matching-resources';
+import { findMatchingResources, MetadataMatch, TagsMatch } from '../src/find-matching-resources';
 import { testAssembly, TestStack } from './util';
 
 describe('findMatchingResources', () => {
@@ -94,6 +94,66 @@ describe('findMatchingResources', () => {
         assembly,
         types: ['AWS::StepFunctions::StateMachine'],
         metadata: new MetadataMatch(['group', 'other']),
+      });
+
+      // THEN
+      expect(matchingResources).toHaveLength(1);
+      expect(matchingResources[0].constructPath).toEqual('Stack/Boom1/Resource');
+    });
+  });
+
+  describe('tags match', () => {
+    const assembly = testAssembly(app => {
+      const stack = new TestStack(app, 'Stack');
+      const sfn1 = new aws_stepfunctions.StateMachine(stack, 'Boom1', {
+        definition: new aws_stepfunctions.Succeed(stack, 'Succeed1'),
+      });
+      Tags.of(sfn1).add('group', 'sfn1');
+      Tags.of(sfn1).add('other', 'other');
+
+      const sfn2 = new aws_stepfunctions.StateMachine(stack, 'Boom2', {
+        definition: new aws_stepfunctions.Succeed(stack, 'Succeed2'),
+      });
+      Tags.of(sfn2).add('group', 'sfn2');
+
+      new aws_stepfunctions.StateMachine(stack, 'Boom3', {
+        definition: new aws_stepfunctions.Succeed(stack, 'Succeed3'),
+      });
+    });
+
+    test('bare key', () => {
+      // WHEN
+      const matchingResources = findMatchingResources({
+        assembly,
+        types: ['AWS::StepFunctions::StateMachine'],
+        tags: new TagsMatch(['group']),
+      });
+
+      // THEN
+      expect(matchingResources).toHaveLength(2);
+      expect(matchingResources[0].constructPath).toEqual('Stack/Boom1/Resource');
+      expect(matchingResources[1].constructPath).toEqual('Stack/Boom2/Resource');
+    });
+
+    test('key=value', () => {
+      // WHEN
+      const matchingResources = findMatchingResources({
+        assembly,
+        types: ['AWS::StepFunctions::StateMachine'],
+        tags: new TagsMatch(['group=sfn2']),
+      });
+
+      // THEN
+      expect(matchingResources).toHaveLength(1);
+      expect(matchingResources[0].constructPath).toEqual('Stack/Boom2/Resource');
+    });
+
+    test('multiple keys and values', () => {
+      // WHEN
+      const matchingResources = findMatchingResources({
+        assembly,
+        types: ['AWS::StepFunctions::StateMachine'],
+        tags: new TagsMatch(['group', 'other']),
       });
 
       // THEN

@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import * as yargs from 'yargs';
 import { AwsSdk } from '../aws-sdk';
 import { Executor } from '../executor';
-import { MetadataMatch } from '../find-matching-resources';
+import { MetadataMatch, TagsMatch } from '../find-matching-resources';
 
 async function main(): Promise<number> {
   const args: any = yargs
@@ -28,6 +28,11 @@ async function main(): Promise<number> {
         alias: 'm',
         description: 'Match resources with the given metadata key or key=value',
       })
+      .option('tag', {
+        type: 'array',
+        alias: 't',
+        description: 'Match resources with the given tag key or key=value',
+      })
       .option('input', {
         type: 'string',
         description: 'Execute with custom JSON input',
@@ -42,6 +47,7 @@ async function main(): Promise<number> {
     app: args.app,
     all: args.all,
     metadata: args.metadata ? new MetadataMatch(args.metadata) : undefined,
+    tags: args.tag ? new TagsMatch(args.tag) : undefined,
     input: args.input,
   });
 }
@@ -68,6 +74,11 @@ export interface CdkExecOptions {
   readonly metadata?: MetadataMatch;
 
   /**
+   * Match records with the given tags
+   */
+  readonly tags?: TagsMatch;
+
+  /**
    * Execution input.
    */
   readonly input?: string;
@@ -81,6 +92,7 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
       assembly,
       constructPath: options.constructPath,
       metadata: options.metadata,
+      tags: options.tags,
       sdk: new AwsSdk(),
     });
 

@@ -61,10 +61,10 @@ project.addTask('integ:exec:sfn:succeed', {
   exec: `${cliCmd} -m integ=sfn --input '{"succeed":true}'`,
 });
 project.addTask('integ:exec:sfn:fail', {
-  exec: `${cliCmd} -m integ=sfn integ-cdk-exec/StateMachine`,
+  exec: `${cliCmd} -t integ=sfn integ-cdk-exec/StateMachine`,
 });
 project.addTask('integ:exec:lambda:succeed', {
-  exec: `${cliCmd} -m integ=lambda --input '{"succeed":true}'`,
+  exec: `${cliCmd} -t integ=lambda --input '{"succeed":true}'`,
 });
 project.addTask('integ:exec:lambda:fail', {
   exec: `${cliCmd} -m integ=lambda`,

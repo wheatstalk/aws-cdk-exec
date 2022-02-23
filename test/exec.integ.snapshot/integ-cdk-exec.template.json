@@ -25,7 +25,13 @@
             }
           ],
           "Version": "2012-10-17"
-        }
+        },
+        "Tags": [
+          {
+            "Key": "integ",
+            "Value": "sfn"
+          }
+        ]
       },
       "Metadata": {
         "aws:cdk:path": "integ-cdk-exec/StateMachine/Role/Resource"
@@ -40,7 +46,13 @@
             "Arn"
           ]
         },
-        "DefinitionString": "{\"StartAt\":\"Choice\",\"States\":{\"Choice\":{\"Type\":\"Choice\",\"Choices\":[{\"Variable\":\"$.succeed\",\"IsPresent\":true,\"Next\":\"ChoiceSucceed\"}],\"Default\":\"ChoiceFail\"},\"ChoiceFail\":{\"Type\":\"Fail\"},\"ChoiceSucceed\":{\"Type\":\"Succeed\"}}}"
+        "DefinitionString": "{\"StartAt\":\"Choice\",\"States\":{\"Choice\":{\"Type\":\"Choice\",\"Choices\":[{\"Variable\":\"$.succeed\",\"IsPresent\":true,\"Next\":\"ChoiceSucceed\"}],\"Default\":\"ChoiceFail\"},\"ChoiceFail\":{\"Type\":\"Fail\"},\"ChoiceSucceed\":{\"Type\":\"Succeed\"}}}",
+        "Tags": [
+          {
+            "Key": "integ",
+            "Value": "sfn"
+          }
+        ]
       },
       "DependsOn": [
         "StateMachineRoleB840431D"
@@ -78,6 +90,12 @@
               ]
             ]
           }
+        ],
+        "Tags": [
+          {
+            "Key": "integ",
+            "Value": "lambda"
+          }
         ]
       },
       "Metadata": {
@@ -97,7 +115,13 @@
           ]
         },
         "Handler": "index.handler",
-        "Runtime": "python3.9"
+        "Runtime": "python3.9",
+        "Tags": [
+          {
+            "Key": "integ",
+            "Value": "lambda"
+          }
+        ]
       },
       "DependsOn": [
         "FunctionServiceRole675BB04A"

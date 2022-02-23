@@ -76,7 +76,13 @@
                             }
                           ],
                           "Version": "2012-10-17"
-                        }
+                        },
+                        "tags": [
+                          {
+                            "key": "integ",
+                            "value": "sfn"
+                          }
+                        ]
                       }
                     },
                     "constructInfo": {
@@ -102,7 +108,13 @@
                         "Arn"
                       ]
                     },
-                    "definitionString": "{\"StartAt\":\"Choice\",\"States\":{\"Choice\":{\"Type\":\"Choice\",\"Choices\":[{\"Variable\":\"$.succeed\",\"IsPresent\":true,\"Next\":\"ChoiceSucceed\"}],\"Default\":\"ChoiceFail\"},\"ChoiceFail\":{\"Type\":\"Fail\"},\"ChoiceSucceed\":{\"Type\":\"Succeed\"}}}"
+                    "definitionString": "{\"StartAt\":\"Choice\",\"States\":{\"Choice\":{\"Type\":\"Choice\",\"Choices\":[{\"Variable\":\"$.succeed\",\"IsPresent\":true,\"Next\":\"ChoiceSucceed\"}],\"Default\":\"ChoiceFail\"},\"ChoiceFail\":{\"Type\":\"Fail\"},\"ChoiceSucceed\":{\"Type\":\"Succeed\"}}}",
+                    "tags": [
+                      {
+                        "key": "integ",
+                        "value": "sfn"
+                      }
+                    ]
                   }
                 },
                 "constructInfo": {
@@ -155,6 +167,12 @@
                               ]
                             ]
                           }
+                        ],
+                        "tags": [
+                          {
+                            "key": "integ",
+                            "value": "lambda"
+                          }
                         ]
                       }
                     },
@@ -185,7 +203,13 @@
                       ]
                     },
                     "handler": "index.handler",
-                    "runtime": "python3.9"
+                    "runtime": "python3.9",
+                    "tags": [
+                      {
+                        "key": "integ",
+                        "value": "lambda"
+                      }
+                    ]
                   }
                 },
                 "constructInfo": {
