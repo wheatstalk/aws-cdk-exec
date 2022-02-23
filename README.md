@@ -128,6 +128,8 @@ Output:
 ✅  Execution succeeded
 ```
 
+## Resource Matching
+
 **Path matching**
 
 `cdk-exec` searches for resources matching the exact path you provide and any
@@ -138,6 +140,26 @@ For example, if you have only one function or state machine in a stack, you
 can type `cdk-exec my-stack` and your resource will be found. If your entire
 app has only one executable resource, you can run `cdk-exec` without arguments
 to run it.
+
+**Tag matching**
+
+When running `cdk-exec --tag mytag=value`, cdk-exec will search for a resource
+matching tags that you have defined in your CDK app. If more than one resource
+would match, by default `cdk-exec` will produce an error message. But, if you
+want to execute several resources simultaneously, `cdk-exec` provides `--all`.
+
+We have also added aliases and shorthands to streamline typing label-matching
+commands. For example, `cdk-exec -at mytag` will try to run all resources with
+a tag named `mytag`, regardless of the value of the tag. This has the same
+effect as typing the longer `cdk-exec --all --tag mytag` command.
+
+**Metadata matching**
+
+When running `cdk-exec --metadata mymeta=myvalue`, cdk-exec will search for and
+run resources containing the given metadata. Same as for tag matching, you can
+run one or more matching resources if you specify the `--all` option.
+
+## Notes
 
 **Path metadata**
 
