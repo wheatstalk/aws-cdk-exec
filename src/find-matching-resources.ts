@@ -112,18 +112,22 @@ export interface MatchingResource {
   readonly constructPath: string;
 }
 
-/**
- * Match resource metadata with the given specification.
- */
-export class MetadataMatch {
-  readonly spec: Record<string, string | undefined>;
+export abstract class MatchBase {
+  protected readonly spec: Record<string, string | undefined>;
 
   constructor(spec: string[]) {
     this.spec = Object.fromEntries(
-      spec.map(metadata => metadata.split('=', 2)),
+      spec
+        .flatMap(metadata => metadata.split(','))
+        .map(metadata => metadata.split('=', 2)),
     );
   }
+}
 
+/**
+ * Match resource metadata with the given specification.
+ */
+export class MetadataMatch extends MatchBase {
   matches(resourceMetadata: Record<string, string>) {
     for (const entry of Object.entries(this.spec)) {
       const [key, value] = entry;
@@ -146,15 +150,7 @@ export interface CfnTag {
   readonly Value: string;
 }
 
-export class TagsMatch {
-  readonly spec: Record<string, string | undefined>;
-
-  constructor(spec: string[]) {
-    this.spec = Object.fromEntries(
-      spec.map(metadata => metadata.split('=', 2)),
-    );
-  }
-
+export class TagsMatch extends MatchBase {
   matches(resourceTags?: Array<CfnTag>) {
     if (!resourceTags) {
       return false;
