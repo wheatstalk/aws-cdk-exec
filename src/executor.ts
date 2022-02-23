@@ -1,7 +1,6 @@
-import * as cxapi from 'aws-cdk-lib/cx-api';
 import * as AWS from 'aws-sdk';
 import { IAwsSdk, LazyListStackResources } from './aws-sdk';
-import { findMatchingResources, MatchingResource, MetadataMatch } from './find-matching-resources';
+import { FindMatchingResourceOptionsCommon, findMatchingResources, MatchingResource } from './find-matching-resources';
 
 const STATE_MACHINE_TYPE = 'AWS::StepFunctions::StateMachine';
 const LAMBDA_TYPE = 'AWS::Lambda::Function';
@@ -64,22 +63,7 @@ export abstract class Executor {
 /**
  * Options for finding executors.
  */
-export interface FindExecutorOptions {
-  /**
-   * The Cloud Assembly
-   */
-  readonly assembly: cxapi.CloudAssembly;
-
-  /**
-   * Path to the resource containing the state machine to execute.
-   */
-  readonly constructPath?: string;
-
-  /**
-   * Metadata of the resources to match.
-   */
-  readonly metadata?: MetadataMatch;
-
+export interface FindExecutorOptions extends FindMatchingResourceOptionsCommon {
   /**
    * AWS SDK
    */
@@ -253,12 +237,10 @@ function getLambdaErrorMessage(output: any) {
  * Finds an executor.
  */
 async function findExecutors(options: FindExecutorOptions): Promise<Executor[]> {
-  const { assembly, constructPath, sdk, metadata } = options;
+  const { constructPath, sdk } = options;
 
   const matchingResources = findMatchingResources({
-    assembly,
-    constructPath,
-    metadata,
+    ...options,
     types: [
       STATE_MACHINE_TYPE,
       LAMBDA_TYPE,

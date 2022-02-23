@@ -134,7 +134,7 @@
       "name": "integ:exec:lambda:succeed",
       "steps": [
         {
-          "exec": "ts-node -P tsconfig.dev.json src/cli/cdk-exec.ts --app test/exec.integ.snapshot -m integ=lambda --input '{\"succeed\":true}'"
+          "exec": "ts-node -P tsconfig.dev.json src/cli/cdk-exec.ts --app test/exec.integ.snapshot -t integ=lambda --input '{\"succeed\":true}'"
         }
       ]
     },
@@ -142,7 +142,7 @@
       "name": "integ:exec:sfn:fail",
       "steps": [
         {
-          "exec": "ts-node -P tsconfig.dev.json src/cli/cdk-exec.ts --app test/exec.integ.snapshot -m integ=sfn integ-cdk-exec/StateMachine"
+          "exec": "ts-node -P tsconfig.dev.json src/cli/cdk-exec.ts --app test/exec.integ.snapshot -t integ=sfn integ-cdk-exec/StateMachine"
         }
       ]
     },

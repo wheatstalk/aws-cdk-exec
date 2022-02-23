@@ -1,6 +1,7 @@
 import * as cxapi from 'aws-cdk-lib/cx-api';
 
-export interface FindMatchingResourceOptions {
+export interface FindMatchingResourceOptionsCommon {
+
   /**
    * The Cloud Assembly to search.
    */
@@ -17,6 +18,13 @@ export interface FindMatchingResourceOptions {
   readonly metadata?: MetadataMatch;
 
   /**
+   * Tags to search for.
+   */
+  readonly tags?: TagsMatch;
+}
+
+export interface FindMatchingResourceOptions extends FindMatchingResourceOptionsCommon{
+  /**
    * Match only the given resource types.
    */
   readonly types: string[];
@@ -31,6 +39,7 @@ export function findMatchingResources(options: FindMatchingResourceOptions): Mat
     types,
     assembly,
     metadata,
+    tags,
   } = options;
 
   const matches = Array<MatchingResource>();
@@ -58,6 +67,11 @@ export function findMatchingResources(options: FindMatchingResourceOptions): Mat
       }
 
       if (metadata && !metadata.matches(resourceMetadata)) {
+        continue;
+      }
+
+      const resourceTags = resourceRecord.Properties?.Tags;
+      if (tags && !tags.matches(resourceTags)) {
         continue;
       }
 
@@ -119,6 +133,42 @@ export class MetadataMatch {
       }
 
       if (value !== undefined && resourceMetadata[key] !== value) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
+
+export interface CfnTag {
+  readonly Key: string;
+  readonly Value: string;
+}
+
+export class TagsMatch {
+  readonly spec: Record<string, string | undefined>;
+
+  constructor(spec: string[]) {
+    this.spec = Object.fromEntries(
+      spec.map(metadata => metadata.split('=', 2)),
+    );
+  }
+
+  matches(resourceTags?: Array<CfnTag>) {
+    if (!resourceTags) {
+      return false;
+    }
+
+    for (const entry of Object.entries(this.spec)) {
+      const [key, value] = entry;
+
+      const tag = resourceTags.find(t => t.Key === key);
+      if (!tag) {
+        return false;
+      }
+
+      if (value !== undefined && tag.Value !== value) {
         return false;
       }
     }
