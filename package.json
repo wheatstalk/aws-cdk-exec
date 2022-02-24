@@ -41,7 +41,7 @@
     "organization": false
   },
   "devDependencies": {
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^27.4.1",
     "@types/node": "^12",
     "@types/yargs": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^5",
@@ -58,7 +58,7 @@
     "jest-junit": "^13",
     "json-schema": "^0.4.0",
     "npm-check-updates": "^12",
-    "projen": "^0.52.44",
+    "projen": "^0.52.45",
     "standard-version": "^9",
     "ts-jest": "^27.1.3",
     "ts-node": "^10.5.0",
