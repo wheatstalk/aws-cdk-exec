@@ -33,6 +33,11 @@ async function main(): Promise<number> {
         alias: 't',
         description: 'Match resources with the given tag key or key=value',
       })
+      .option('output', {
+        type: 'boolean',
+        description: 'Show execution output',
+        default: true,
+      })
       .option('input', {
         type: 'string',
         description: 'Execute with custom JSON input',
@@ -49,6 +54,7 @@ async function main(): Promise<number> {
     metadata: args.metadata ? new MetadataMatch(args.metadata) : undefined,
     tags: args.tag ? new TagsMatch(args.tag) : undefined,
     input: args.input,
+    showOutput: args.output,
   });
 }
 
@@ -82,6 +88,11 @@ export interface CdkExecOptions {
    * Execution input.
    */
   readonly input?: string;
+
+  /**
+   * Show output.
+   */
+  readonly showOutput: boolean;
 }
 
 export async function cdkExec(options: CdkExecOptions): Promise<number> {
@@ -120,13 +131,13 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
     let error = false;
     for (const result of executorResults) {
       console.log('\n\n✨  Final status of %s', result.executor.constructPath);
-      if (result.output) {
+      if (options.showOutput && result.output) {
         console.log('\nOutput:\n%s', chalk.cyan(JSON.stringify(result.output, null, 2)));
       }
 
       if (result.error) {
         error = true;
-        console.log('\n❌  Execution failed: %s', result.error);
+        console.log('\n❌  Execution failed with an error message:\n\n%s', chalk.red(result.error));
       } else {
         console.log('\n✅  Execution succeeded');
       }

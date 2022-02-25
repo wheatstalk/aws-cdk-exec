@@ -207,10 +207,10 @@ export class LambdaFunctionExecutor extends Executor {
     }
 
     const output = JSON.parse(payload);
-    const errorMessage = getLambdaErrorMessage(output);
-    if (errorMessage) {
+    const error = getLambdaErrorMessage(output);
+    if (error) {
       return {
-        error: `Lambda returned an error message: ${errorMessage}`,
+        error,
         output,
       };
     }
