@@ -1201,9 +1201,9 @@ aws-sdk-mock@^5.6.2:
     traverse "^0.6.6"
 
 aws-sdk@^2.0.0, aws-sdk@^2.928.0:
-  version "2.1086.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1086.0.tgz#49e782f8017d1962651061606b6ac0f901af8fe6"
-  integrity sha512-iQb9UpvaJphZSJrNccN8xA3rQBG7mg29Qvgt2VG4XnUM4cwD/i4+gJ3V/rSmM4rzAWZMbTk04lal+KBn7ByNyw==
+  version "2.1087.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1087.0.tgz#bb00dbac5c6bf415040ad00e7c95462b34c26ddf"
+  integrity sha512-m5EERT29Fwh2cv3SaSdygeAjJBXnjSaXRRERy70bf6PQ7KgmASJouBxY11g5G7LTEPK/yfB0TGshujKh3hEtPA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -1441,9 +1441,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001312:
-  version "1.0.30001312"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001312.tgz#e11eba4b87e24d22697dae05455d5aea28550d5f"
-  integrity sha512-Wiz1Psk2MEK0pX3rUzWaunLTZzqS2JYZFzNKqAiJGiuxIjRPLgV6+VDPOg6lQOUxmDwhTlh198JsTTi8Hzw6aQ==
+  version "1.0.30001313"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001313.tgz#a380b079db91621e1b7120895874e2fd62ed2e2f"
+  integrity sha512-rI1UN0koZUiKINjysQDuRi2VeSCce3bYJNmDcj3PIKREiAmjakugBul1QSkg/fPrlULYl6oWfGg3PbgOSY9X4Q==
 
 case@1.6.3, case@^1.6.3:
   version "1.6.3"
@@ -1627,9 +1627,9 @@ console-control-strings@^1.1.0:
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
 constructs@^10.0.0:
-  version "10.0.78"
-  resolved "https://registry.yarnpkg.com/constructs/-/constructs-10.0.78.tgz#2ae717d0ce86e04e2360d4722cfa097c740b4ab0"
-  integrity sha512-i1dZaygBiliDs17hzcuU9VW4QQnJV7rjzCl66nZcTIjxmoZ+tVzf2wV4+aQOo0MxPAikL9eY34tZ/w8XOTKakA==
+  version "10.0.79"
+  resolved "https://registry.yarnpkg.com/constructs/-/constructs-10.0.79.tgz#a389c15b6d6ac06f5a43679d32be80b10272806f"
+  integrity sha512-7HQzd4m8W7IQBryzuuHgBbYaPK/gKXOeSFYZad/ax1HVtN5hcTQccVtPMdeR04rzSsicnymr2llANYpK70CsHA==
 
 conventional-changelog-angular@^5.0.12:
   version "5.0.13"
@@ -4688,10 +4688,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.52.54:
-  version "0.52.54"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.52.54.tgz#81df7c304fb9c896398d701205c8d8e9ec110e86"
-  integrity sha512-b88HgIXK1QZSQB7Hfy9V7S6pNEdg5I1cqqnpWJjhn/tPpdGMg7LVLEPr+SSBKjfKux6qqfwsSxw6iSgKgEDDZw==
+projen@^0.52.56:
+  version "0.52.56"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.52.56.tgz#e24a966ba63fe32e85ab9169af7205dbeab055b5"
+  integrity sha512-8My7YSUMyona+2iO5QaKXBjYM9JomQB+OV00zlE0CuLDwQE5fuigkNJ3TE15prhVriv4jlNRl5V0tL1a2l3eVw==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
