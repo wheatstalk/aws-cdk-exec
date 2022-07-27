@@ -902,9 +902,9 @@
   integrity sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==
 
 "@types/prettier@^2.1.5":
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.6.3.tgz#68ada76827b0010d0db071f739314fa429943d0a"
-  integrity sha512-ymZk3LEC/fsut+/Q5qejp6R9O1rMxz3XaRHDV6kX8MrGAhOSPqVARbDi+EZvInBpw+BnCX3TD240byVkOfQsHg==
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.6.4.tgz#ad899dad022bab6b5a9f0a0fe67c2f7a4a8950ed"
+  integrity sha512-fOwvpvQYStpb/zHMx0Cauwywu9yLDmzWiiQBC7gJyq5tYLUXFZvDG7VK1B7WBxxjBJNKFOZ0zLoOQn8vmATbhw==
 
 "@types/responselike@*", "@types/responselike@^1.0.0":
   version "1.0.0"
@@ -1276,9 +1276,9 @@ aws-sdk-mock@^5.7.0:
     traverse "^0.6.6"
 
 aws-sdk@^2.0.0, aws-sdk@^2.1122.0:
-  version "2.1181.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1181.0.tgz#6ec2997881ae3df76e56d7150fc2992f12ce43dc"
-  integrity sha512-AAHSknRFAIjXBA/XNAL7gS79agr1LbS0oGimOJqJauGSJfWNaOpDc7z6OLNUQqGa5Joc3maD5QJcSKp1Pm/deQ==
+  version "2.1182.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1182.0.tgz#7364e3e104f62b61018a00f19f2ffc989b1780ed"
+  integrity sha512-iemVvLTc2iy0rz3xTp8zc/kD27gIfDF/mk6bxY8/35xMulKCVANWUkAH8jWRKReHh5F/gX4bp33dnfG63ny1Ww==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -1724,9 +1724,9 @@ console-control-strings@^1.1.0:
   integrity sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==
 
 constructs@^10.0.0:
-  version "10.1.57"
-  resolved "https://registry.yarnpkg.com/constructs/-/constructs-10.1.57.tgz#5ba85118b71a3fe86d32185b6e7ac313d6ee9a0e"
-  integrity sha512-gb+Q0FIb8f969coSCqcBwQEZfwk3tIZRp9tIQQxMDDaYR55Fs+2rzRFk8+NLnBIOLbUxE60F7OQ6E8mZfMKRdw==
+  version "10.1.58"
+  resolved "https://registry.yarnpkg.com/constructs/-/constructs-10.1.58.tgz#f52a545d425407dafc8540409f0f0c1a373cd443"
+  integrity sha512-34ehg9DBhjoWcaaehSn0B8V0U+wh9OO6sam/fiCxKdOsFw+sG3ZSsH1JU/mqlt+r01WTJrvc0aZ86GKItrM4LA==
 
 conventional-changelog-angular@^5.0.12:
   version "5.0.13"
@@ -2135,9 +2135,9 @@ eastasianwidth@^0.2.0:
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
 electron-to-chromium@^1.4.188:
-  version "1.4.200"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.200.tgz#6e4c5266106688965b4ea7caa11f0dd315586854"
-  integrity sha512-nPyI7oHc8T64oSqRXrAt99gNMpk0SAgPHw/o+hkNKyb5+bcdnFtZcSO9FUJES5cVkVZvo8u4qiZ1gQILl8UXsA==
+  version "1.4.202"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.202.tgz#0c2ed733f42b02ec49a955c5badfcc65888c390b"
+  integrity sha512-JYsK2ex9lmQD27kj19fhXYxzFJ/phLAkLKHv49A5UY6kMRV2xED3qMMLg/voW/+0AR6wMiI+VxlmK9NDtdxlPA==
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -4865,10 +4865,10 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.60.3:
-  version "0.60.3"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.60.3.tgz#015a995be7882c6045087c82d9e17e01b562de72"
-  integrity sha512-gmKns3+eih6SiWKFuTQ6GSO3tOScV/lYq3TNDbxQA143jr5TKPh3xeyyIPqBYJMnUSCqUSQUFN4bfNz+FjjdVA==
+projen@^0.60.4:
+  version "0.60.4"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.60.4.tgz#10661541b1d00b82c959b8ae550a023f8b9b3298"
+  integrity sha512-RaGrt8Cc+SwQ5UblReJPndJfyeJLml+GnMCP1+dCypn96OqxB9OJdT/BQriMVWeSZ9yBo+WSHm2GdKjY9c0XdA==
   dependencies:
     "@iarna/toml" "^2.2.5"
     case "^1.6.3"
