@@ -13,6 +13,7 @@ const project = new typescript.TypeScriptProject({
     'aws-sdk@^2.0.0',
     'yargs@^17.0.0',
     'chalk@^4.0.0',
+    'aws-cdk-lib@^2.0.0',
   ],
 
   peerDeps: [
