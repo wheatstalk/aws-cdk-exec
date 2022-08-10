@@ -53,6 +53,10 @@ export abstract class Executor {
    */
   abstract execute(input?: string): Promise<ExecuteResult>;
 
+  public env(): Promise<Record<string, string>> {
+    return Promise.resolve({});
+  };
+
   protected validateJsonObjectInput(input: string | undefined) {
     if (input && !isJsonObject(input)) {
       throw new Error('The provided input should be a JSON object');
@@ -218,6 +222,15 @@ export class LambdaFunctionExecutor extends Executor {
     return {
       output,
     };
+  }
+
+  public async env(): Promise<Record<string, string>> {
+    const config = await this.lambda.getFunctionConfiguration({
+      FunctionName: this.physicalResourceId,
+    }).promise();
+
+    const environmentVariables = config.Environment?.Variables;
+    return environmentVariables ?? {};
   }
 }
 

@@ -69,5 +69,8 @@ project.addTask('integ:exec:lambda:succeed', {
 project.addTask('integ:exec:lambda:fail', {
   exec: `${cliCmd} -m integ=lambda`,
 });
+project.addTask('integ:export-env', {
+  exec: `${cliCmd} --export-env integ-cdk-exec/Function`,
+});
 
 project.synth();

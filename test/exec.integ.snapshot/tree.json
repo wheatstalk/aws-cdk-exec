@@ -9,7 +9,7 @@
         "path": "Tree",
         "constructInfo": {
           "fqn": "constructs.Construct",
-          "version": "10.0.68"
+          "version": "10.1.71"
         }
       },
       "integ-cdk-exec": {
@@ -128,6 +128,30 @@
               "version": "2.0.0"
             }
           },
+          "Secret": {
+            "id": "Secret",
+            "path": "integ-cdk-exec/Secret",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "integ-cdk-exec/Secret/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "generateSecretString": {}
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.0.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.0.0"
+            }
+          },
           "Function": {
             "id": "Function",
             "path": "integ-cdk-exec/Function",
@@ -180,6 +204,50 @@
                       "fqn": "aws-cdk-lib.aws_iam.CfnRole",
                       "version": "2.0.0"
                     }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "integ-cdk-exec/Function/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "integ-cdk-exec/Function/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "secretsmanager:GetSecretValue",
+                                    "secretsmanager:DescribeSecret"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Ref": "SecretA720EF05"
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "FunctionServiceRoleDefaultPolicy2F49994A",
+                            "roles": [
+                              {
+                                "Ref": "FunctionServiceRole675BB04A"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.0.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.0.0"
+                    }
                   }
                 },
                 "constructInfo": {
@@ -201,6 +269,14 @@
                         "FunctionServiceRole675BB04A",
                         "Arn"
                       ]
+                    },
+                    "environment": {
+                      "variables": {
+                        "FOO": "bar",
+                        "SECRET_ARN": {
+                          "Ref": "SecretA720EF05"
+                        }
+                      }
                     },
                     "handler": "index.handler",
                     "runtime": "python3.9",
@@ -246,7 +322,7 @@
             },
             "constructInfo": {
               "fqn": "constructs.Construct",
-              "version": "10.0.68"
+              "version": "10.1.71"
             }
           }
         },

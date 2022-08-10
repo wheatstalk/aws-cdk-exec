@@ -22,6 +22,18 @@ Output:
 > WARNING: Do not rely on this tool to execute your functions in a production
 > environment. Now that you have been warned, please read on.
 
+**Exporting Environment Variables**
+
+If during local development you want to access the environment variables
+configured for a Lambda Function, such as to see the arns of real resources,
+you may use `cdk-exec --export-env integ-cdk-exec/Function`.
+
+```
+$ cdk-exec --export-env integ-cdk-exec/Function
+FOO=bar
+SECRET_ARN=arn:aws:secretsmanager:REGION:000000000000:secret:SecretA720EF05-qa4X020B9S3f-UI3sIs
+```
+
 ## Usage
 
 First, add `@wheatstalk/aws-cdk-exec` to your project's dev dependencies.
