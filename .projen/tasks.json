@@ -163,6 +163,14 @@
         }
       ]
     },
+    "integ:export-env": {
+      "name": "integ:export-env",
+      "steps": [
+        {
+          "exec": "ts-node -P tsconfig.dev.json src/cli/cdk-exec.ts --app test/exec.integ.snapshot --export-env integ-cdk-exec/Function"
+        }
+      ]
+    },
     "package": {
       "name": "package",
       "description": "Creates the distribution package",

@@ -1,5 +1,6 @@
 import { App, CfnResource, Stack, Tags } from 'aws-cdk-lib';
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Choice, Condition, Fail, StateMachine, Succeed } from 'aws-cdk-lib/aws-stepfunctions';
 
 const app = new App();
@@ -15,6 +16,8 @@ const sfn = new StateMachine(stack, 'StateMachine', {
 (sfn.node.defaultChild as CfnResource).addMetadata('integ', 'sfn');
 Tags.of(sfn).add('integ', 'sfn');
 
+const secret = new Secret(stack, 'Secret');
+
 const fn = new Function(stack, 'Function', {
   runtime: Runtime.PYTHON_3_9,
   handler: 'index.handler',
@@ -25,7 +28,12 @@ def handler(event, context):
 
   raise Exception('Error from lambda')
 `),
+  environment: {
+    FOO: 'bar',
+    SECRET_ARN: secret.secretArn,
+  },
 });
+secret.grantRead(fn);
 (fn.node.defaultChild as CfnResource).addMetadata('integ', 'lambda');
 Tags.of(fn).add('integ', 'lambda');
 

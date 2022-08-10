@@ -23,6 +23,10 @@ async function main(): Promise<number> {
         alias: 'a',
         description: 'Execute all matching resources',
       })
+      .option('export-env', {
+        type: 'boolean',
+        describe: 'Export a .env for all matching function environment variables',
+      })
       .option('metadata', {
         type: 'array',
         alias: 'm',
@@ -46,6 +50,15 @@ async function main(): Promise<number> {
 
   // TODO: Need a better way to handle config-based profiles.
   process.env.AWS_SDK_LOAD_CONFIG = '1';
+
+  if (args.exportEnv) {
+    return exportEnv({
+      constructPath: args.path,
+      app: args.app,
+      metadata: args.metadata ? new MetadataMatch(args.metadata) : undefined,
+      tags: args.tag ? new TagsMatch(args.tag) : undefined,
+    });
+  }
 
   return cdkExec({
     constructPath: args.path,
@@ -154,6 +167,60 @@ export async function cdkExec(options: CdkExecOptions): Promise<number> {
 
     throw e;
   }
+}
+
+export interface ExportEnv {
+  /**
+   * App directory.
+   */
+  readonly app: string;
+
+  /**
+   * Path of the construct to execute.
+   */
+  readonly constructPath?: string;
+
+  /**
+   * Match records with the given metadata
+   */
+  readonly metadata?: MetadataMatch;
+
+  /**
+   * Match records with the given tags
+   */
+  readonly tags?: TagsMatch;
+}
+
+export async function exportEnv(options: ExportEnv): Promise<number> {
+  const assembly = new cxapi.CloudAssembly(options.app);
+
+  const executors = await Executor.find({
+    assembly,
+    constructPath: options.constructPath,
+    metadata: options.metadata,
+    tags: options.tags,
+    sdk: new AwsSdk(),
+  });
+
+  if (executors.length === 0) {
+    console.error('❌  No matching executable constructs found');
+    return 1;
+  }
+
+  if (executors.length > 1) {
+    console.error('\n❌  Matched multiple resources: %s', executors.map(e => e.constructPath).join(', '));
+    return 1;
+  }
+
+  for (const executor of executors) {
+    const env = await executor.env();
+
+    for (const [k, v] of Object.entries(env)) {
+      console.log(`${k}=${v}`);
+    }
+  }
+
+  return 0;
 }
 
 main()

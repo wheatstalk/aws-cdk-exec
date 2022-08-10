@@ -22,6 +22,7 @@
     "integ:exec:sfn:fail": "npx projen integ:exec:sfn:fail",
     "integ:exec:sfn:succeed": "npx projen integ:exec:sfn:succeed",
     "integ:exec:succeed": "npx projen integ:exec:succeed",
+    "integ:export-env": "npx projen integ:export-env",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
     "post-upgrade": "npx projen post-upgrade",
