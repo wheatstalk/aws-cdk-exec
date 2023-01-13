@@ -1,7 +1,7 @@
 import { CfnResource, Tags } from 'aws-cdk-lib';
 import * as aws_stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
-import { findMatchingResources, MetadataMatch, TagsMatch } from '../src/find-matching-resources';
 import { testAssembly, TestStack } from './util';
+import { findMatchingResources, MetadataMatch, TagsMatch } from '../src/find-matching-resources';
 
 describe('findMatchingResources', () => {
   test.each([undefined, 'Stack'])('constructPath = %s', (constructPath) => {
