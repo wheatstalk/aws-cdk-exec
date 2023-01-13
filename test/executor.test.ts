@@ -1,8 +1,8 @@
 import { Stack } from 'aws-cdk-lib';
 import * as aws_lambda from 'aws-cdk-lib/aws-lambda';
 import * as aws_stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
-import { Executor, LambdaFunctionExecutor, StateMachineExecutor } from '../src/executor';
 import { MockAwsSdk, testAssembly, TestStack } from './util';
+import { Executor, LambdaFunctionExecutor, StateMachineExecutor } from '../src/executor';
 
 describe('Executor', () => {
   describe('state machine', () => {
