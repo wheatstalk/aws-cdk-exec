@@ -11,9 +11,9 @@
     "@jridgewell/trace-mapping" "^0.3.9"
 
 "@aws-cdk/asset-awscli-v1@^2.2.49":
-  version "2.2.49"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-awscli-v1/-/asset-awscli-v1-2.2.49.tgz#af7618a3a39bf103f82d7aa396efa50e6ae79092"
-  integrity sha512-Qd5bdLlC/sphWQQPNn7etKXWCh+fij7DWxtkIwvhhZ+LM6UEApGLS8sBLBQcRO2ZQdEuNb+zeClUy+3DNojfeg==
+  version "2.2.51"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-awscli-v1/-/asset-awscli-v1-2.2.51.tgz#53debb65197d2c4edb808623579cb6c00e50aff7"
+  integrity sha512-WcFw8LKQt6anPLgcj+NK2UhMdfIk+aLk2LQBNAPYyrynwfSQZjU3auuqsJGZuIwtSZ3Qs885L0GsDK2hunEFtQ==
 
 "@aws-cdk/asset-kubectl-v20@^2.1.1":
   version "2.1.1"
@@ -21,9 +21,9 @@
   integrity sha512-U1ntiX8XiMRRRH5J1IdC+1t5CE89015cwyt5U63Cpk0GnMlN5+h9WsWMlKlPXZR4rdq/m806JRlBMRpBUB2Dhw==
 
 "@aws-cdk/asset-node-proxy-agent-v5@^2.0.38":
-  version "2.0.38"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-node-proxy-agent-v5/-/asset-node-proxy-agent-v5-2.0.38.tgz#6765bef55f95220c52decb4adba8f75c1817b0f7"
-  integrity sha512-BBwAjORhuUkTGO3CxGS5Evcp5n20h9v06Sftn2R1DuSm8zIoUlPsNlI1HUk8XqYuoEI4aD7IKRQBLglv09ciJQ==
+  version "2.0.41"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/asset-node-proxy-agent-v5/-/asset-node-proxy-agent-v5-2.0.41.tgz#2b41cc780052caecf02d3bb9cbdbaeb691d3ac3b"
+  integrity sha512-POfpCysF+of+KhMdxNykYkXAKS81gdXXPqukA+j/IubLaCFqIctQLafgAZ5P5ec4c6pHwFjWGl1I6fJOpPSd7g==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.18.6":
   version "7.18.6"
@@ -1321,9 +1321,9 @@ aws-sdk-mock@^5.8.0:
     traverse "^0.6.6"
 
 aws-sdk@^2.0.0, aws-sdk@^2.1231.0:
-  version "2.1300.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1300.0.tgz#40190f3ccea8693c3764edab7aa5bd26db350fa7"
-  integrity sha512-1pz/+Kot+kTiH0WDH5A8Ao06dwz73xX6oCIpTbGTt/AKdmGTC8aAkMbk+KXoQatJSsQyqqxrtWIeKIQUaeUYDw==
+  version "2.1301.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1301.0.tgz#fbe971fca51deccecc6729f2f01fc2b0ff41ba1f"
+  integrity sha512-AxCt0GfWV14AWC0yvN3+WEBr45JMu2X3FHb8r3H8EhZjJfHk3hWcDwu6vS5Qd8NFDATlFdWJfyQjPVU1YuaDfw==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -1793,9 +1793,9 @@ console-control-strings@^1.1.0:
   integrity sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==
 
 constructs@^10.0.0:
-  version "10.1.229"
-  resolved "https://registry.yarnpkg.com/constructs/-/constructs-10.1.229.tgz#67825b4a91ee7359d0942d2b09130d520f7e9b5f"
-  integrity sha512-YoZaXKIqjy0sIggwAt5IgH+HaWhdiDmSSj0HA/QFRV5ooGYxcdS4WfH/xqDISxKY4MRyxKwgBpXUiJ3v/7aJTg==
+  version "10.1.230"
+  resolved "https://registry.yarnpkg.com/constructs/-/constructs-10.1.230.tgz#41f92acadd9f3b24f4c1be800b1b16bfa640a745"
+  integrity sha512-IthwvFD4pa8CtvNSx4mnfKi0kHEnQJ6tBebo+L6rTSx071H3XpMzV1WZS5PLh5B6czkfzaERV54ZzNKC8jUJxw==
 
 conventional-changelog-angular@^5.0.12:
   version "5.0.13"
