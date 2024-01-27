@@ -31,7 +31,6 @@ jspm_packages/
 *.tgz
 .yarn-integrity
 .cache
-!/.projenrc.js
 /test-reports/
 junit.xml
 /coverage/
@@ -50,3 +49,4 @@ junit.xml
 /dist/
 !/.eslintrc.json
 /.idea
+!/.projenrc.js
