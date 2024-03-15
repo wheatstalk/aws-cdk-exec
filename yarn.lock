@@ -1205,9 +1205,9 @@ available-typed-arrays@^1.0.7:
     possible-typed-array-names "^1.0.0"
 
 aws-cdk-lib@^2.0.0:
-  version "2.132.1"
-  resolved "https://registry.yarnpkg.com/aws-cdk-lib/-/aws-cdk-lib-2.132.1.tgz#d8b7d08add76b1ac7053539818fcb455b726d451"
-  integrity sha512-VheC7WcvmxiteNaZPucS9J9haGQZwbUtwNiNqsbTaEiru6ETUhf/yIOIamLto1kOKEPxCw2bfLkgYrWoCzwOpw==
+  version "2.133.0"
+  resolved "https://registry.yarnpkg.com/aws-cdk-lib/-/aws-cdk-lib-2.133.0.tgz#a70ac4a22333f9b57db8f1a6eb9a9ed03a4a1489"
+  integrity sha512-5/ezv8Ir2xyz3myeXQcODwrjVRN/cDD2OpBwU/ySFBe+uNac25OoHfTXwUPwE7oLj9qetSt6/i1QvY2iIs6yiQ==
   dependencies:
     "@aws-cdk/asset-awscli-v1" "^2.2.202"
     "@aws-cdk/asset-kubectl-v20" "^2.1.2"
@@ -1225,9 +1225,9 @@ aws-cdk-lib@^2.0.0:
     yaml "1.10.2"
 
 aws-cdk@^2.0.0:
-  version "2.132.1"
-  resolved "https://registry.yarnpkg.com/aws-cdk/-/aws-cdk-2.132.1.tgz#c7c281200f2bee627bda3f7909000eb35f0ec0ee"
-  integrity sha512-aIZXfX5YGNvqhbTUoUrNeXWVt6CL3d7RDSEXrPifX5OpEgI2jqtZQVpHaUzuTzTd8niuyucwvlmZmKN8xBg2/A==
+  version "2.133.0"
+  resolved "https://registry.yarnpkg.com/aws-cdk/-/aws-cdk-2.133.0.tgz#df80e98280a5d2d3ae356cef04b0bb33f7e01a05"
+  integrity sha512-EwH8VgQQ8ODeMwjE3p+WhbcbWNkCbvuJJl+Py9IB5znGf7GwLcEmOu4YWBsBGPVu41SXbSAf36twMBrJytCFZA==
   optionalDependencies:
     fsevents "2.3.2"
 
@@ -1241,9 +1241,9 @@ aws-sdk-mock@^5.9.0:
     traverse "^0.6.6"
 
 aws-sdk@^2.0.0, aws-sdk@^2.1231.0:
-  version "2.1577.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1577.0.tgz#c86c15f25ba78adba54d8aeada54bcddb734c26f"
-  integrity sha512-B9glJQaJ53XEUUgFe6653n1ImuLgxFUJVIbEvafRlYhEcPW+1mzn4DjDWG0r9bMxDEIhSjAgIT1YoaJrxxT1iw==
+  version "2.1578.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1578.0.tgz#f22566374917720edce6e0655bb98034f0fedebd"
+  integrity sha512-8TTN61GbYcvVYnjsboWEzYJhqVC16P7DdZ9jdlpryfZEjmsa8f/Wkg9DZCSWsseHjPIq4G6XeAXN3BJXEpIx4g==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -1934,9 +1934,9 @@ dotgitignore@^2.1.0:
     minimatch "^3.0.4"
 
 electron-to-chromium@^1.4.668:
-  version "1.4.704"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.704.tgz#218696fc0b1cb42298b9ae0612d9c4ffd6f8500e"
-  integrity sha512-OK01+86Qvby1V6cTiowVbhp25aX4DLZnwar+NocAOXdzKAByd+jq5156bmo4kHwevWMknznW18Y/Svfk2dU91A==
+  version "1.4.707"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.707.tgz#77904f87432b8b50b8b8b654ba3940d2bef48d63"
+  integrity sha512-qRq74Mo7ChePOU6GHdfAJ0NREXU8vQTlVlfWz3wNygFay6xrd/fY2J7oGHwrhFeU30OVctGLdTh/FcnokTWpng==
 
 emittery@^0.8.1:
   version "0.8.1"
