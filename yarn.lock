@@ -26,9 +26,9 @@
   integrity sha512-twhuEG+JPOYCYPx/xy5uH2+VUsIEhPTzDY0F1KuB+ocjWWB/KEDiOVL19nHvbPCB6fhWnkykXEMJ4HHcKvjtvg==
 
 "@aws-cdk/cloud-assembly-schema@^36.0.5":
-  version "36.0.15"
-  resolved "https://registry.yarnpkg.com/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-36.0.15.tgz#b86fb49a0d45a5f0ec045b1e6d4498df33d7c30d"
-  integrity sha512-hblt0SNCYVeWKqSFi7d+xUaowCnpQWOiJuG2EGoNfj/kdkXnBPsy3gkqudwEafuiv8xJS5jHplLPfEqbdTEnYA==
+  version "36.0.16"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-36.0.16.tgz#6a768356aa433810807a9b7cb33a5b2eb271f9bc"
+  integrity sha512-CJjlb47SSbFKNQ10JYHWY+eYx4VoR/swu+/aG1rWoDsLMNoPIFc52PhckXcF3Xoo0JQWSUWYDJXihozpUqqcMw==
   dependencies:
     jsonschema "^1.4.1"
     semver "^7.6.3"
@@ -677,11 +677,11 @@
     type-detect "4.0.8"
 
 "@sinonjs/fake-timers@^11.2.2":
-  version "11.2.2"
-  resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-11.2.2.tgz#50063cc3574f4a27bd8453180a04171c85cc9699"
-  integrity sha512-G2piCSxQ7oWOxwGSAyFHfPIsyeJGXYtc6mFbnFA+kRXkiEnTl8c/8jul2S329iFBnDI9HGoeWWAZvuvOkZccgw==
+  version "11.3.1"
+  resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-11.3.1.tgz#51d6e8d83ca261ff02c0ab0e68e9db23d5cd5999"
+  integrity sha512-EVJO7nW5M/F5Tur0Rf2z/QoMo+1Ia963RiMtapiQrEWvY0iBUvADo8Beegwjpnle5BHkyHuoxSTW3jF43H1XRA==
   dependencies:
-    "@sinonjs/commons" "^3.0.0"
+    "@sinonjs/commons" "^3.0.1"
 
 "@sinonjs/fake-timers@^8.0.1":
   version "8.1.0"
